@@ -1,16 +1,16 @@
-import React from 'react';
+import type { HTMLAttributes } from 'react';
 import clsx from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
-interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
+interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
   type: 'income' | 'expense';
 }
 
 export function Badge({ type, className, children, ...props }: BadgeProps) {
-  const baseStyle = "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold uppercase tracking-wider";
+  const baseStyle = "inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium tracking-wide";
   const typeStyle = type === 'income' 
-    ? "bg-emerald-100 text-emerald-800 border border-emerald-200" 
-    : "bg-rose-100 text-rose-800 border border-rose-200";
+    ? "bg-emerald-500/10 text-emerald-400" 
+    : "bg-rose-500/10 text-rose-400";
 
   return (
     <span className={twMerge(clsx(baseStyle, typeStyle, className))} {...props}>
