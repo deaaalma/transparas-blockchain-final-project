@@ -66,6 +66,32 @@ contract KasOrganisasi {
         uint256 _nominal,
         bool _isIncome
     ) external onlyOwner {
+        _addTransactionInternal(_keterangan, _nominal, _isIncome, block.timestamp);
+    }
+
+    /**
+     * @dev Menambahkan transaksi historis (migrasi data lama) ke ledger.
+     * @param _keterangan Deskripsi transaksi
+     * @param _nominal Jumlah dalam Rupiah
+     * @param _isIncome true = pemasukan, false = pengeluaran
+     * @param _pastTimestamp Waktu spesifik masa lalu (Unix timestamp)
+     */
+    function addPastTransaction(
+        string calldata _keterangan,
+        uint256 _nominal,
+        bool _isIncome,
+        uint256 _pastTimestamp
+    ) external onlyOwner {
+        require(_pastTimestamp <= block.timestamp, "Tanggal tidak boleh di masa depan");
+        _addTransactionInternal(_keterangan, _nominal, _isIncome, _pastTimestamp);
+    }
+
+    function _addTransactionInternal(
+        string calldata _keterangan,
+        uint256 _nominal,
+        bool _isIncome,
+        uint256 _txTimestamp
+    ) private {
         require(bytes(_keterangan).length > 0, "Keterangan tidak boleh kosong");
         require(_nominal > 0, "Nominal harus lebih dari 0");
         
@@ -83,11 +109,11 @@ contract KasOrganisasi {
             keterangan: _keterangan,
             nominal: _nominal,
             isIncome: _isIncome,
-            timestamp: block.timestamp,
+            timestamp: _txTimestamp,
             addedBy: msg.sender
         }));
         
-        emit TransactionAdded(transactionCount, _keterangan, _nominal, _isIncome, block.timestamp);
+        emit TransactionAdded(transactionCount, _keterangan, _nominal, _isIncome, _txTimestamp);
     }
 
     // ======== READ FUNCTIONS (public view) ========
