@@ -1,0 +1,45 @@
+# ====== GLOBAL ======
+node_modules/
+.DS_Store
+*.log
+
+# ====== FRONTEND (React/Vite) ======
+frontend/dist/
+frontend/dist-ssr/
+frontend/*.local
+frontend/.env
+frontend/.env.*
+frontend/.env.local
+frontend/.env.*.local
+frontend/coverage/
+
+# ====== BACKEND (Express/Prisma) ======
+backend/dist/
+backend/.env
+backend/prisma/*.db
+backend/prisma/*.db-journal
+
+# ====== SMART CONTRACTS (Hardhat) ======
+smart_contracts/cache/
+smart_contracts/artifacts/
+smart_contracts/coverage/
+smart_contracts/typechain/
+smart_contracts/typechain-types/
+smart_contracts/ignition/deployments/
+smart_contracts/.env
+
+# ====== IDE & EDITOR ======
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ====== PLANNING ======
+planning/
