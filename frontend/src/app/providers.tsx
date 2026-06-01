@@ -1,11 +1,13 @@
 import type { ReactNode } from 'react'
 import { AuthProvider } from '../features/auth'
+import { WalletProvider } from '../features/blockchain/WalletContext'
 
 export function Providers({ children }: { children: ReactNode }) {
   return (
     <AuthProvider>
-      {/* tambah provider lain di sini */}
-      {children}
+      <WalletProvider>
+        {children}
+      </WalletProvider>
     </AuthProvider>
   )
 }
