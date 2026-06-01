@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import '@fontsource-variable/mona-sans';
 @import "tailwindcss";
 
 @theme {
@@ -30,13 +30,26 @@
   --color-border: rgba(255,255,255,0.08);
   --color-border-strong: rgba(255,255,255,0.14);
 
-  --font-sans: "Inter", system-ui, sans-serif;
+  --font-sans: "Mona Sans", system-ui, sans-serif;
+
+  /* Font weight scale – matches Mona Sans variable axis */
+  --fw-light:      300;   /* muted / tertiary text        */
+  --fw-regular:    400;   /* body text, descriptions      */
+  --fw-medium:     500;   /* nav labels, card labels      */
+  --fw-semibold:   600;   /* section headings, topbar     */
+  --fw-bold:       700;   /* page titles, stat labels     */
+  --fw-extrabold:  800;   /* big numbers, KPI values      */
 }
 
 @layer base {
   *, *::before, *::after { box-sizing: border-box; }
 
-  html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* WCAG 1.4.4: base font size 16px — ensures rem/em scale correctly */
+    font-size: 16px;
+  }
 
   body {
     @apply font-sans;

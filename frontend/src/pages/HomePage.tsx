@@ -59,29 +59,53 @@ function StatCard({
   label: string; value: string; pct: string; icon: React.ReactNode;
   variant: StatVariant; barPct: number;
 }) {
-  const colors: Record<StatVariant, { bar: string; pct: string; icon: string; }> = {
-    gold:  { bar: 'bg-[var(--color-brand-orange)]',  pct: 'text-[var(--color-brand-orange)]',  icon: 'bg-[var(--color-brand-orange-dim)] text-[var(--color-brand-orange)]'   },
-    green: { bar: 'bg-[var(--color-income)]',         pct: 'text-[var(--color-income)]',         icon: 'bg-[var(--color-income-dim)] text-[var(--color-income)]'               },
-    red:   { bar: 'bg-[var(--color-expense)]',        pct: 'text-[var(--color-expense)]',        icon: 'bg-[var(--color-expense-dim)] text-[var(--color-expense)]'             },
+  const colors: Record<StatVariant, { bar: string; pct: string }> = {
+    gold:  { bar: 'bg-[var(--color-brand-orange)]', pct: 'text-[var(--color-brand-orange)]' },
+    green: { bar: 'bg-[var(--color-income)]',        pct: 'text-[var(--color-income)]'       },
+    red:   { bar: 'bg-[var(--color-expense)]',       pct: 'text-[var(--color-expense)]'      },
   };
   const c = colors[variant];
 
   return (
-    <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-card)] p-5 flex flex-col gap-3 relative overflow-hidden">
-      <div className="flex items-start justify-between">
-        <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${c.icon}`}>
+    <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-card)] p-5 flex flex-col gap-4 relative overflow-hidden">
+      {/* Row: icon + percentage */}
+      <div className="flex items-center justify-between">
+        {/* Bare icon – uniform muted gray, no box */}
+        <span
+          className="flex items-center justify-center"
+          style={{ color: 'var(--color-text-muted)' }}
+          aria-hidden="true"
+        >
           {icon}
-        </div>
-        <span className={`text-xs font-semibold tabular-nums ${c.pct}`}>{pct}</span>
+        </span>
+        {/* Pct badge */}
+        <span
+          className={`text-xs tabular-nums rounded-full px-2 py-0.5 ${c.pct}`}
+          style={{ fontWeight: 'var(--fw-medium)', background: 'rgba(255,255,255,0.05)' }}
+        >
+          {pct}
+        </span>
       </div>
 
       <div>
-        <p className="text-sm text-[var(--color-text-secondary)] mb-1 font-medium">{label}</p>
-        <p className="text-2xl font-bold tracking-tight text-[var(--color-text-primary)]">{value}</p>
+        {/* WCAG AA: text-sm (14px) + secondary color (5.1:1 contrast) */}
+        <p
+          className="text-sm text-[var(--color-text-secondary)] mb-1.5 uppercase"
+          style={{ fontWeight: 'var(--fw-light)', letterSpacing: '0.07em' }}
+        >
+          {label}
+        </p>
+        {/* KPI value – text-3xl (30px) extrabold, highly readable */}
+        <p
+          className="text-3xl tracking-tight text-[var(--color-text-primary)] tabular-nums leading-none"
+          style={{ fontWeight: 'var(--fw-extrabold)' }}
+        >
+          {value}
+        </p>
       </div>
 
-      {/* progress bar */}
-      <div className="h-0.5 w-full rounded-full bg-[var(--color-border-strong)] mt-1" aria-hidden="true">
+      {/* Progress bar */}
+      <div className="h-px w-full rounded-full bg-[var(--color-border-strong)]" aria-hidden="true">
         <div
           className={`h-full rounded-full transition-all duration-700 ${c.bar}`}
           style={{ width: `${Math.min(barPct, 100)}%` }}
@@ -138,8 +162,8 @@ function AllocDonut({ total }: { total: number }) {
           </PieChart>
         </ResponsiveContainer>
         <div className="absolute text-center pointer-events-none">
-          <p className="text-[10px] font-semibold text-[var(--color-text-muted)] uppercase tracking-widest">TOTAL</p>
-          <p className="text-2xl font-bold text-[var(--color-text-primary)]">100%</p>
+          <p className="text-[10px] text-[var(--color-text-muted)] uppercase tracking-widest" style={{ fontWeight: 'var(--fw-medium)' }}>TOTAL</p>
+          <p className="text-2xl text-[var(--color-text-primary)] tabular-nums" style={{ fontWeight: 'var(--fw-extrabold)' }}>100%</p>
         </div>
       </div>
 
@@ -150,7 +174,7 @@ function AllocDonut({ total }: { total: number }) {
               <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: a.color }} aria-hidden="true" />
               <span className="text-[var(--color-text-secondary)]">{a.name}</span>
             </div>
-            <span className="font-semibold tabular-nums" style={{ color: a.color }}>{a.pct}%</span>
+            <span className="tabular-nums" style={{ color: a.color, fontWeight: 'var(--fw-semibold)' }}>{a.pct}%</span>
           </div>
         ))}
       </div>
@@ -264,13 +288,11 @@ export default function HomePage() {
         aria-label="Navigasi utama"
       >
         {/* Logo */}
-        <div
-          className="w-9 h-9 rounded-xl flex items-center justify-center mb-4 shrink-0"
-          style={{ background: 'var(--color-brand-orange)' }}
-          aria-label="TransParas"
-        >
-          <span className="text-white font-extrabold text-base select-none leading-none">T</span>
-        </div>
+        <img
+          src="/logo.png"
+          alt="TransParas Logo"
+          className="w-9 h-9 rounded-xl mb-4 shrink-0 object-cover"
+        />
 
         <nav className="flex flex-col items-center gap-1 flex-1" aria-label="Menu">
           <NavItem icon={<LayoutDashboard size={18} />} label="Dashboard"    active />
@@ -295,14 +317,13 @@ export default function HomePage() {
         >
           {/* Logo text */}
           <div className="flex items-center gap-2">
-            <div
-              className="w-6 h-6 rounded-lg flex items-center justify-center"
-              style={{ background: 'var(--color-brand-orange)' }}
+            <img
+              src="/logo.png"
+              alt=""
+              className="w-6 h-6 rounded-lg object-cover shrink-0"
               aria-hidden="true"
-            >
-              <span className="text-white font-bold text-xs leading-none select-none">T</span>
-            </div>
-            <span className="font-bold tracking-[0.12em] text-sm text-[var(--color-text-primary)] uppercase">
+            />
+            <span className="text-sm text-[var(--color-text-primary)] uppercase" style={{ fontWeight: 'var(--fw-bold)', letterSpacing: '0.14em' }}>
               TransParas
             </span>
           </div>
@@ -358,11 +379,12 @@ export default function HomePage() {
           {/* Page heading */}
           <div className="flex items-start justify-between mb-6">
             <div>
-              <h1 className="text-2xl font-bold tracking-tight text-[var(--color-text-primary)]">
+              <h1 className="text-3xl tracking-tight text-[var(--color-text-primary)]" style={{ fontWeight: 'var(--fw-bold)' }}>
                 Data Overview
               </h1>
-              <p className="text-sm mt-0.5" style={{ color: 'var(--color-text-secondary)' }}>
-                Status transparansi keuangan komunitas · diperbarui otomatis setiap 15 detik
+              {/* WCAG: text-sm (14px) + secondary color 5.1:1 contrast */}
+              <p className="text-sm mt-1" style={{ color: 'var(--color-text-secondary)', fontWeight: 'var(--fw-light)' }}>
+                Status transparansi keuangan komunitas &middot; diperbarui otomatis setiap 15 detik
               </p>
             </div>
             <button
@@ -384,7 +406,7 @@ export default function HomePage() {
               label="Saldo Terkini"
               value={idr(balance.balance)}
               pct="+1.2%"
-              icon={<Building2 size={18} />}
+              icon={<Building2 size={14} strokeWidth={2.5} />}
               variant="gold"
               barPct={balance.income > 0 ? (balance.balance / balance.income) * 100 : 0}
             />
@@ -392,7 +414,7 @@ export default function HomePage() {
               label="Total Pemasukan"
               value={idr(balance.income)}
               pct="+8.4%"
-              icon={<ArrowDown size={18} />}
+              icon={<ArrowDown size={14} strokeWidth={2.5} />}
               variant="green"
               barPct={balance.income > 0 ? 100 : 0}
             />
@@ -400,7 +422,7 @@ export default function HomePage() {
               label="Total Pengeluaran"
               value={idr(balance.expense)}
               pct="-2.1%"
-              icon={<ArrowUp size={18} />}
+              icon={<ArrowUp size={14} strokeWidth={2.5} />}
               variant="red"
               barPct={balance.income > 0 ? (balance.expense / balance.income) * 100 : 0}
             />
@@ -415,7 +437,7 @@ export default function HomePage() {
               style={{ background: 'var(--color-bg-card)', borderColor: 'var(--color-border)' }}
             >
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-sm font-semibold text-[var(--color-text-primary)]">Arus Kas Dana</h2>
+                <h2 className="text-lg text-[var(--color-text-primary)]" style={{ fontWeight: 'var(--fw-bold)' }}>Arus Kas Dana</h2>
                 <div className="flex items-center gap-4 text-xs text-[var(--color-text-secondary)]">
                   <span className="flex items-center gap-1.5">
                     <span className="w-2 h-2 rounded-full" style={{ background: 'var(--color-brand-orange)' }} aria-hidden="true" />
@@ -472,7 +494,7 @@ export default function HomePage() {
               className="rounded-2xl border p-5"
               style={{ background: 'var(--color-bg-card)', borderColor: 'var(--color-border)' }}
             >
-              <h2 className="text-sm font-semibold text-[var(--color-text-primary)] mb-4">Alokasi Dana</h2>
+              <h2 className="text-lg text-[var(--color-text-primary)] mb-4" style={{ fontWeight: 'var(--fw-bold)' }}>Alokasi Dana</h2>
               <AllocDonut total={balance.balance} />
             </div>
           </div>
@@ -483,10 +505,10 @@ export default function HomePage() {
             style={{ background: 'var(--color-bg-card)', borderColor: 'var(--color-border)' }}
           >
             <div className="flex items-center justify-between px-5 py-4 border-b" style={{ borderColor: 'var(--color-border)' }}>
-              <h2 className="text-sm font-semibold text-[var(--color-text-primary)]">Transaksi Terbaru</h2>
+              <h2 className="text-lg text-[var(--color-text-primary)]" style={{ fontWeight: 'var(--fw-bold)' }}>Transaksi Terbaru</h2>
               <button
-                className="text-xs font-semibold transition-colors cursor-pointer"
-                style={{ color: 'var(--color-brand-orange)' }}
+                className="text-xs transition-colors cursor-pointer"
+                style={{ color: 'var(--color-brand-orange)', fontWeight: 'var(--fw-semibold)' }}
               >
                 Lihat Semua
               </button>
@@ -499,8 +521,8 @@ export default function HomePage() {
                     {['DESKRIPSI', 'KATEGORI', 'TANGGAL', 'STATUS', 'JUMLAH'].map(h => (
                       <th
                         key={h}
-                        className="px-5 py-3 text-left text-xs font-semibold tracking-wider uppercase"
-                        style={{ color: 'var(--color-text-muted)' }}
+                        className="px-5 py-3 text-left text-xs uppercase"
+                        style={{ color: 'var(--color-text-muted)', fontWeight: 'var(--fw-medium)', letterSpacing: '0.08em' }}
                       >
                         {h}
                       </th>
@@ -543,8 +565,8 @@ export default function HomePage() {
                                 {tx.isIncome ? <ArrowDown size={14} /> : <ArrowUp size={14} />}
                               </div>
                               <span
-                                className="font-medium truncate max-w-[160px]"
-                                style={{ color: 'var(--color-text-primary)' }}
+                                className="truncate max-w-[160px]"
+                                style={{ color: 'var(--color-text-primary)', fontWeight: 'var(--fw-medium)' }}
                                 title={tx.keterangan}
                               >
                                 {tx.keterangan}
@@ -578,8 +600,8 @@ export default function HomePage() {
 
                           {/* Jumlah */}
                           <td
-                            className="px-5 py-3.5 text-right font-semibold tabular-nums text-sm"
-                            style={{ color: tx.isIncome ? 'var(--color-income)' : 'var(--color-expense)' }}
+                            className="px-5 py-3.5 text-right tabular-nums text-sm"
+                            style={{ color: tx.isIncome ? 'var(--color-income)' : 'var(--color-expense)', fontWeight: 'var(--fw-semibold)' }}
                           >
                             {tx.isIncome ? '+' : '-'}{idr(tx.nominal)}
                           </td>
@@ -629,7 +651,7 @@ export default function HomePage() {
                   className="rounded-xl p-4 mb-5"
                   style={{ background: 'var(--color-bg-surface)', border: '1px solid var(--color-border)' }}
                 >
-                  <h2 id="modal-title" className="text-base font-bold text-[var(--color-text-primary)]">
+                  <h2 id="modal-title" className="text-base text-[var(--color-text-primary)]" style={{ fontWeight: 'var(--fw-bold)' }}>
                     Catat Transaksi Baru
                   </h2>
                   <p className="text-xs mt-0.5" style={{ color: 'var(--color-text-secondary)' }}>
@@ -640,7 +662,7 @@ export default function HomePage() {
                 <form onSubmit={handleAdd} className="space-y-4" noValidate>
                   {/* Type toggle */}
                   <fieldset>
-                    <legend className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: 'var(--color-text-muted)' }}>
+                    <legend className="text-xs uppercase tracking-wider mb-2" style={{ color: 'var(--color-text-muted)', fontWeight: 'var(--fw-medium)', letterSpacing: '0.08em' }}>
                       Jenis Transaksi
                     </legend>
                     <div className="grid grid-cols-2 gap-2">
@@ -652,11 +674,12 @@ export default function HomePage() {
                           key={opt.label}
                           type="button"
                           onClick={() => setIsIncome(opt.value)}
-                          className="py-2.5 rounded-xl text-sm font-semibold transition-all cursor-pointer border"
+                          className="py-2.5 rounded-xl text-sm transition-all cursor-pointer border"
                           style={{
                             background: isIncome === opt.value ? opt.dim : 'var(--color-bg-card-hover)',
                             color:      isIncome === opt.value ? opt.color : 'var(--color-text-secondary)',
                             borderColor: isIncome === opt.value ? opt.color : 'var(--color-border)',
+                            fontWeight: 'var(--fw-semibold)',
                           }}
                           aria-pressed={isIncome === opt.value}
                         >
@@ -670,8 +693,8 @@ export default function HomePage() {
                   <div>
                     <label
                       htmlFor="modal-nominal"
-                      className="block text-xs font-semibold uppercase tracking-wider mb-1.5"
-                      style={{ color: 'var(--color-text-muted)' }}
+                      className="block text-xs uppercase mb-1.5"
+                      style={{ color: 'var(--color-text-muted)', fontWeight: 'var(--fw-medium)', letterSpacing: '0.08em' }}
                     >
                       Nominal (IDR)
                     </label>
@@ -682,7 +705,7 @@ export default function HomePage() {
                         borderColor: 'var(--color-border-strong)',
                       }}
                     >
-                      <span className="text-sm font-semibold shrink-0" style={{ color: 'var(--color-text-muted)' }}>Rp</span>
+                      <span className="text-sm shrink-0" style={{ color: 'var(--color-text-muted)', fontWeight: 'var(--fw-medium)' }}>Rp</span>
                       <input
                         id="modal-nominal"
                         type="number"
@@ -690,8 +713,8 @@ export default function HomePage() {
                         value={nominal}
                         onChange={e => setNominal(e.target.value)}
                         placeholder="500000"
-                        className="flex-1 bg-transparent text-sm font-semibold outline-none"
-                        style={{ color: 'var(--color-text-primary)' }}
+                        className="flex-1 bg-transparent text-sm outline-none"
+                        style={{ color: 'var(--color-text-primary)', fontWeight: 'var(--fw-semibold)' }}
                         required
                       />
                     </div>
@@ -701,8 +724,8 @@ export default function HomePage() {
                   <div>
                     <label
                       htmlFor="modal-keterangan"
-                      className="block text-xs font-semibold uppercase tracking-wider mb-1.5"
-                      style={{ color: 'var(--color-text-muted)' }}
+                      className="block text-xs uppercase mb-1.5"
+                      style={{ color: 'var(--color-text-muted)', fontWeight: 'var(--fw-medium)', letterSpacing: '0.08em' }}
                     >
                       Keterangan
                     </label>
