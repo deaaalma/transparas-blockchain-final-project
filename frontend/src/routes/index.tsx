@@ -5,6 +5,7 @@ import LoginPage from '../pages/LoginPage'
 import NotFoundPage from '../pages/NotFoundPage'
 import TambahTransaksi from '../pages/TambahTransaksi'
 import TransactionPage from '../pages/TransactionPage'
+import TransactionDetailPage from '../pages/TransactionDetailPage'
 
 export function AppRoutes() {
   return (
@@ -12,6 +13,7 @@ export function AppRoutes() {
       <Route path="/" element={<Layout />}>
         <Route index element={<HomePage />} />
         <Route path="transaksi" element={<TransactionPage />} />
+        <Route path="transaksi/:id" element={<TransactionDetailPage />} />
         <Route path="tambah" element={<TambahTransaksi />} />
         <Route path="ekspor" element={<div className="p-7">Halaman Laporan (Segera Hadir)</div>} />
         <Route path="verifikasi" element={<div className="p-7">Halaman Verifikasi (Segera Hadir)</div>} />

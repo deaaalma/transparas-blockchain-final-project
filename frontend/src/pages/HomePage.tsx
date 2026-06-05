@@ -495,14 +495,6 @@ export default function HomePage() {
       {/* ── FAB – Tambah Transaksi (Bendahara only) ─────────────────── */}
       {isOwner && (
         <>
-          <button
-            onClick={() => setShowAddModal(true)}
-            aria-label="Catat transaksi baru"
-            className="fixed bottom-6 right-6 w-14 h-14 rounded-full flex items-center justify-center shadow-xl cursor-pointer transition-transform hover:scale-105 active:scale-95 z-40"
-            style={{ background: 'var(--color-brand-orange)' }}
-          >
-            <Plus size={24} className="text-white" aria-hidden="true" />
-          </button>
 
           {/* Add Transaction Modal */}
           {showAddModal && (

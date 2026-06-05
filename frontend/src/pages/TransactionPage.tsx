@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useBlockchain, type Transaction } from '../hooks/useBlockchain';
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '../components/ui/Table';
 import { Skeleton } from '../components/ui/Skeleton';
@@ -21,6 +22,7 @@ function StatusBadge({ status }: { status: string }) {
 }
 
 export default function TransactionPage() {
+  const navigate = useNavigate();
   const { getTransactions, isConnected } = useBlockchain();
   const { toast } = useToast();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -41,7 +43,7 @@ export default function TransactionPage() {
       setTransactions(sorted);
     } catch (err) {
       console.error(err);
-      toast("Failed to load transactions", "error");
+      toast("Gagal memuat riwayat transaksi", "error");
     } finally {
       setIsLoading(false);
     }
@@ -72,7 +74,7 @@ export default function TransactionPage() {
 
   const handleRefresh = async () => {
     await fetchTransactions();
-    toast("Transaction data refreshed successfully", "success");
+    toast("Data transaksi berhasil diperbarui", "success");
   };
 
   const filteredTransactions = transactions.filter(tx => {
@@ -117,7 +119,7 @@ export default function TransactionPage() {
               Transaction History
             </h1>
             <p className="text-sm text-[var(--color-text-secondary)] mt-1">
-              Complete list of all organizational income and expenses recorded on the blockchain
+              Daftar lengkap seluruh pemasukan dan pengeluaran organisasi yang tercatat di dalam blockchain
             </p>
           </div>
           <Button onClick={handleRefresh} variant="outline" size="sm" className="gap-2 rounded-xl h-[34px]">
@@ -134,7 +136,7 @@ export default function TransactionPage() {
               <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]" />
               <input
                 type="text"
-                placeholder="Search by description or Tx ID..."
+                placeholder="Cari berdasarkan deskripsi atau ID..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full bg-[var(--color-bg-card)] border border-[var(--color-border-strong)] rounded-xl py-2 pl-10 pr-4 text-sm text-[var(--color-text-primary)] placeholder-[var(--color-text-muted)] focus:outline-none focus:border-[var(--color-brand-orange-dim)] transition-colors"
@@ -159,11 +161,11 @@ export default function TransactionPage() {
               {/* Filter Dropdown Content */}
               {isFilterOpen && (
                 <div className="absolute right-0 top-full mt-2 w-[340px] bg-[var(--color-bg-surface)] border border-[var(--color-border-strong)] rounded-2xl p-5 shadow-2xl z-50 animate-in fade-in slide-in-from-top-2">
-                  <h3 className="text-sm font-semibold text-[var(--color-text-primary)] mb-5">Filter Transactions</h3>
+                  <h3 className="text-sm font-semibold text-[var(--color-text-primary)] mb-5">Filter Transaksi</h3>
                   
                   {/* Date Range */}
                   <div className="space-y-3 mb-6">
-                    <label className="text-[11px] text-[var(--color-text-muted)] font-bold uppercase tracking-wider">Date Range</label>
+                    <label className="text-[11px] text-[var(--color-text-muted)] font-bold uppercase tracking-wider">Rentang Waktu</label>
                     <div className="flex flex-col gap-2">
                       <input
                         type="date"
@@ -171,7 +173,7 @@ export default function TransactionPage() {
                         onChange={(e) => setStartDate(e.target.value)}
                         className="w-full bg-[var(--color-bg-input)] border border-[var(--color-border)] rounded-lg py-2 px-3 text-sm text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-brand-orange-dim)] [color-scheme:dark]"
                       />
-                      <div className="text-center text-[var(--color-text-muted)] text-[11px] font-medium uppercase tracking-widest">To</div>
+                      <div className="text-center text-[var(--color-text-muted)] text-[11px] font-medium uppercase tracking-widest">Hingga</div>
                       <input
                         type="date"
                         value={endDate}
@@ -183,7 +185,7 @@ export default function TransactionPage() {
 
                   {/* Type Filter */}
                   <div className="space-y-3 mb-6">
-                    <label className="text-[11px] text-[var(--color-text-muted)] font-bold uppercase tracking-wider">Transaction Type</label>
+                    <label className="text-[11px] text-[var(--color-text-muted)] font-bold uppercase tracking-wider">Tipe Transaksi</label>
                     <div className="flex items-center bg-[var(--color-bg-input)] rounded-lg p-1 border border-[var(--color-border)] w-full">
                       {(['all', 'income', 'expense'] as const).map(type => (
                         <button
@@ -224,11 +226,11 @@ export default function TransactionPage() {
         {/* Active Filter Badges */}
         {(filterType !== 'all' || startDate || endDate) && (
           <div className="flex flex-wrap items-center gap-2 mt-1">
-            <span className="text-xs font-medium text-[var(--color-text-muted)] mr-1">Active Filters:</span>
+            <span className="text-xs font-medium text-[var(--color-text-muted)] mr-1">Filter Aktif:</span>
             
             {filterType !== 'all' && (
               <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[var(--color-bg-surface)] border border-[var(--color-border-strong)] shadow-sm text-xs text-[var(--color-text-primary)]">
-                <span className="capitalize"><span className="text-[var(--color-text-muted)] mr-1">Type:</span>{filterType}</span>
+                <span className="capitalize"><span className="text-[var(--color-text-muted)] mr-1">Tipe:</span>{filterType}</span>
                 <button onClick={() => setFilterType('all')} className="text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] transition-colors">
                   <X size={12} />
                 </button>
@@ -237,7 +239,7 @@ export default function TransactionPage() {
             
             {(startDate || endDate) && (
               <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[var(--color-bg-surface)] border border-[var(--color-border-strong)] shadow-sm text-xs text-[var(--color-text-primary)]">
-                <span><span className="text-[var(--color-text-muted)] mr-1">Date:</span>{startDate || 'Any'} to {endDate || 'Any'}</span>
+                <span><span className="text-[var(--color-text-muted)] mr-1">Tanggal:</span>{startDate || 'Apa saja'} - {endDate || 'Apa saja'}</span>
                 <button onClick={() => { setStartDate(''); setEndDate(''); }} className="text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] transition-colors">
                   <X size={12} />
                 </button>
@@ -248,7 +250,7 @@ export default function TransactionPage() {
               onClick={() => { setFilterType('all'); setStartDate(''); setEndDate(''); }}
               className="text-[11px] font-medium text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] underline underline-offset-2 ml-1 transition-colors"
             >
-              Clear all
+              Hapus semua
             </button>
           </div>
         )}
@@ -258,8 +260,8 @@ export default function TransactionPage() {
       {!isConnected ? (
         <EmptyState
           icon={<FileText size={24} />}
-          title="Wallet Not Connected"
-          description="Please connect your wallet using the button in the top right corner to view transaction history."
+          title="Dompet Belum Terhubung"
+          description="Silakan hubungkan dompet digital Anda (MetaMask) untuk melihat riwayat transaksi."
         />
       ) : isLoading ? (
         // Loading Skeleton
@@ -273,14 +275,14 @@ export default function TransactionPage() {
         // Empty State
         <EmptyState
           icon={<FileText size={24} />}
-          title="No Transactions Yet"
-          description="There are no transactions recorded on the blockchain right now. New records will appear here."
+          title="Belum Ada Transaksi"
+          description="Belum ada transaksi yang tercatat di dalam blockchain saat ini. Catatan baru akan muncul di sini."
         />
       ) : filteredTransactions.length === 0 ? (
         <EmptyState
           icon={<Search size={24} />}
-          title="No Results Found"
-          description="We couldn't find any transactions matching your filters."
+          title="Tidak Ada Hasil"
+          description="Kami tidak menemukan transaksi yang cocok dengan filter pencarian Anda."
           action={
             <Button 
               variant="outline" 
@@ -293,7 +295,7 @@ export default function TransactionPage() {
               }} 
               className="mt-2 rounded-xl"
             >
-              Clear Filters
+              Hapus Filter
             </Button>
           }
         />
@@ -303,16 +305,20 @@ export default function TransactionPage() {
           <TableHeader>
             <TableRow>
               <TableHead>Tx ID</TableHead>
-              <TableHead>Description</TableHead>
-              <TableHead>Date</TableHead>
+              <TableHead>Deskripsi</TableHead>
+              <TableHead>Tanggal</TableHead>
               <TableHead>Status</TableHead>
-              <TableHead className="text-right">Amount</TableHead>
+              <TableHead className="text-right">Nominal</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {filteredTransactions.map((tx) => (
-              <TableRow key={tx.id}>
-                <TableCell className="font-mono text-xs text-[var(--color-text-muted)] font-medium">
+              <TableRow 
+                key={tx.id}
+                onClick={() => navigate(`/transaksi/${tx.id}`)}
+                className="cursor-pointer hover:bg-[var(--color-bg-card-hover)] transition-colors group"
+              >
+                <TableCell className="font-mono text-xs text-[var(--color-text-muted)] font-medium group-hover:text-[var(--color-brand-orange)] transition-colors">
                   #{tx.id}
                 </TableCell>
                 <TableCell>
