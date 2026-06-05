@@ -49,6 +49,32 @@ export default function TransactionPage() {
     }
   };
 
+  const parseDescription = (raw: string) => {
+    const matchCat = raw.match(/^\[(.*?)\]\s*/);
+    let category = matchCat ? matchCat[1] : '';
+    let desc = raw;
+    
+    if (matchCat) {
+      desc = raw.substring(matchCat[0].length);
+    } else {
+      const lower = raw.toLowerCase();
+      if (lower.includes('server') || lower.includes('cloud') || lower.includes('it')) category = 'IT Infrastructure';
+      else if (lower.includes('rapat') || lower.includes('konsumsi')) category = 'Operasional';
+      else if (lower.includes('punia') || lower.includes('donasi') || lower.includes('dana')) category = 'Pemasukan';
+      else if (lower.includes('banten') || lower.includes('upacara')) category = 'Keagamaan';
+      else category = 'Operasional';
+    }
+
+    const matchIpfs = desc.match(/\|\s*(ipfs:\/\/[^\s]+)$/);
+    let ipfsUrl = null;
+    if (matchIpfs) {
+      ipfsUrl = matchIpfs[1];
+      desc = desc.substring(0, matchIpfs.index).trim();
+    }
+
+    return { category, desc, ipfsUrl };
+  };
+
   useEffect(() => {
     document.title = 'Transactions | TransParas';
     if (isConnected) {
@@ -322,11 +348,31 @@ export default function TransactionPage() {
                   #{tx.id}
                 </TableCell>
                 <TableCell>
-                  <div className="font-medium text-[var(--color-text-primary)]">
-                    {tx.keterangan}
-                  </div>
-                  <div className="text-xs text-[var(--color-text-muted)] mt-0.5 font-mono">
-                    By: {tx.addedBy.substring(0, 6)}...{tx.addedBy.substring(38)}
+                  <div className="flex flex-col gap-1.5">
+                    <div className="flex items-center gap-2">
+                      <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border" style={{ background: 'var(--color-bg-card-hover)', color: 'var(--color-text-secondary)', borderColor: 'var(--color-border-strong)' }}>
+                        {parseDescription(tx.keterangan).category}
+                      </span>
+                      <span className="font-medium text-[var(--color-text-primary)]">
+                        {parseDescription(tx.keterangan).desc}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="text-xs text-[var(--color-text-muted)] font-mono">
+                        By: {tx.addedBy.substring(0, 6)}...{tx.addedBy.substring(38)}
+                      </div>
+                      {parseDescription(tx.keterangan).ipfsUrl && (
+                        <a 
+                          href={parseDescription(tx.keterangan).ipfsUrl!.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/')} 
+                          target="_blank" 
+                          rel="noreferrer" 
+                          className="text-[10px] font-semibold text-[var(--color-brand-orange)] hover:underline"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          Lihat Bukti
+                        </a>
+                      )}
+                    </div>
                   </div>
                 </TableCell>
                 <TableCell className="text-[var(--color-text-secondary)]">

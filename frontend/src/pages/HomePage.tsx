@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import { useWallet } from '../features/blockchain/WalletContext';
 import type { Transaction, Balance } from '../hooks/useBlockchain';
 import { Button } from '../components/ui/Button';
@@ -11,7 +12,7 @@ import {
 import {
   LayoutDashboard, ClipboardList, TrendingUp, Shield, Settings,
   LogOut, Bell, Plus, ArrowUp, ArrowDown, Building2, UserCircle2,
-  CalendarDays, CheckCircle2, Clock, AlertCircle,
+  CalendarDays, CheckCircle2, Clock, AlertCircle, RefreshCw
 } from 'lucide-react';
 
 // ─── helpers ──────────────────────────────────────────────────────────────────
@@ -106,16 +107,70 @@ function CustomTooltip({ active, payload, label }: any) {
 
 // ─── donut chart ─────────────────────────────────────────────────────────────
 
-const ALLOC = [
-  { name: 'Operasional', pct: 65, color: '#f97316' },
-  { name: 'Dana Darurat', pct: 25, color: '#a78bfa' },
-  { name: 'Investasi',    pct: 10, color: '#60a5fa' },
-];
+const COLORS: Record<string, string> = {
+  'Keagamaan':   '#f97316', // Orange
+  'Sosial':      '#a78bfa', // Purple
+  'Operasional': '#60a5fa', // Blue
+  'Infrastruktur': '#34d399', // Green
+  'Dana Darurat': '#fbbf24', // Yellow
+  'Lainnya':     '#9ca3af', // Gray
+  'Dana Punia':    '#f97316', // Orange
+  'Iuran Anggota': '#34d399', // Green
+  'Donasi':        '#60a5fa', // Blue
+};
 
-function AllocDonut({ total }: { total: number }) {
-  const data = ALLOC.map(a => ({ ...a, value: Math.round(total * a.pct / 100) }));
+function AllocDonut({ transactions, isIncome = false, onFlip }: { transactions: any[], isIncome?: boolean, onFlip: () => void }) {
+  // Calculate total
+  const total = transactions.reduce((sum, tx) => sum + tx.nominal, 0);
+
+  // Sub-categories: map Konsumsi → Operasional
+  const getMainCategory = (cat: string) => {
+    if (isIncome) return cat; // Pemasukan tidak digabung
+    const map: Record<string, string> = {
+      'Konsumsi': 'Operasional',
+    };
+    return map[cat] || cat;
+  };
+  
+  // Group by MAIN category
+  const grouped = transactions.reduce((acc, tx) => {
+    const mainCat = getMainCategory(tx.category) || 'Lainnya';
+    acc[mainCat] = (acc[mainCat] || 0) + tx.nominal;
+    return acc;
+  }, {} as Record<string, number>);
+
+  // Format for Recharts — use fixed color map by name
+  let data = Object.entries(grouped)
+    .map(([name, value]) => ({
+      name,
+      value: value as number,
+      pct: total > 0 ? Math.round(((value as number) / total) * 100) : 0,
+      color: COLORS[name] || '#6b7280',
+    }))
+    .sort((a, b) => b.value - a.value); // Sort by highest
+
+  // If no data, show empty gray circle
+  if (data.length === 0) {
+    data = [{ name: isIncome ? 'Belum ada pemasukan' : 'Belum ada pengeluaran', value: 1, pct: 0, color: '#374151' }];
+  }
+
   return (
-    <div className="flex flex-col gap-4 h-full">
+    <div className="flex flex-col h-full rounded-2xl border p-5" style={{ background: 'var(--color-bg-card)', borderColor: 'var(--color-border)' }}>
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-lg text-[var(--color-text-primary)]" style={{ fontWeight: 'var(--fw-bold)' }}>
+          {isIncome ? 'Pemasukan' : 'Pengeluaran'}
+        </h2>
+        <button 
+          onClick={onFlip} 
+          className="flex items-center justify-center w-8 h-8 rounded-lg border transition-colors hover:bg-[var(--color-bg-card-hover)]"
+          style={{ color: 'var(--color-text-secondary)', borderColor: 'var(--color-border-strong)' }}
+          title="Putar grafik"
+        >
+          <RefreshCw size={14} />
+        </button>
+      </div>
+
+      <div className="flex flex-col gap-4 flex-1">
       <div className="relative flex items-center justify-center" style={{ height: 180 }}>
         <ResponsiveContainer width="100%" height={180}>
           <PieChart>
@@ -136,20 +191,27 @@ function AllocDonut({ total }: { total: number }) {
         </ResponsiveContainer>
         <div className="absolute text-center pointer-events-none">
           <p className="text-[10px] text-[var(--color-text-muted)] uppercase tracking-widest" style={{ fontWeight: 'var(--fw-medium)' }}>TOTAL</p>
-          <p className="text-2xl text-[var(--color-text-primary)] tabular-nums" style={{ fontWeight: 'var(--fw-extrabold)' }}>100%</p>
+          <p className="text-2xl text-[var(--color-text-primary)] tabular-nums" style={{ fontWeight: 'var(--fw-extrabold)' }}>
+            {total > 0 ? '100%' : '0%'}
+          </p>
         </div>
       </div>
 
-      <div className="space-y-2.5">
-        {ALLOC.map(a => (
-          <div key={a.name} className="flex items-center justify-between text-sm">
-            <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: a.color }} aria-hidden="true" />
-              <span className="text-[var(--color-text-secondary)]">{a.name}</span>
+      <div className="space-y-2.5 max-h-[140px] overflow-y-auto pr-2 custom-scrollbar">
+        {total === 0 ? (
+          <p className="text-center text-sm text-[var(--color-text-muted)] italic">Belum ada {isIncome ? 'pemasukan' : 'pengeluaran'}</p>
+        ) : (
+          data.map(a => (
+            <div key={a.name} className="flex items-center justify-between text-sm">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: a.color }} aria-hidden="true" />
+                <span className="text-[var(--color-text-secondary)]">{a.name}</span>
+              </div>
+              <span className="tabular-nums" style={{ color: a.color, fontWeight: 'var(--fw-semibold)' }}>{a.pct}%</span>
             </div>
-            <span className="tabular-nums" style={{ color: a.color, fontWeight: 'var(--fw-semibold)' }}>{a.pct}%</span>
-          </div>
-        ))}
+          ))
+        )}
+      </div>
       </div>
     </div>
   );
@@ -183,6 +245,7 @@ export default function HomePage() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [balance, setBalance] = useState<Balance>({ income: 0, expense: 0, balance: 0 });
   const [showAddModal, setShowAddModal] = useState(false);
+  const [isChartFlipped, setIsChartFlipped] = useState(false);
 
   // form state
   const [keterangan, setKeterangan] = useState('');
@@ -241,14 +304,32 @@ export default function HomePage() {
     }
   };
 
-  // mock category labels based on keterangan keywords
-  const getCategory = (k: string) => {
-    const lower = k.toLowerCase();
-    if (lower.includes('server') || lower.includes('cloud') || lower.includes('it')) return 'IT Infrastructure';
-    if (lower.includes('rapat') || lower.includes('konsumsi')) return 'Operasional';
-    if (lower.includes('punia') || lower.includes('donasi') || lower.includes('dana')) return 'Pemasukan';
-    if (lower.includes('banten') || lower.includes('upacara')) return 'Keagamaan';
-    return 'Operasional';
+  // extract category, pure description, and ipfs link
+  const parseDescription = (raw: string) => {
+    const matchCat = raw.match(/^\[(.*?)\]\s*/);
+    let category = matchCat ? matchCat[1] : '';
+    let desc = raw;
+    
+    if (matchCat) {
+      desc = raw.substring(matchCat[0].length);
+    } else {
+      // Fallback for old unformatted transactions
+      const lower = raw.toLowerCase();
+      if (lower.includes('server') || lower.includes('cloud') || lower.includes('it')) category = 'IT Infrastructure';
+      else if (lower.includes('rapat') || lower.includes('konsumsi')) category = 'Operasional';
+      else if (lower.includes('punia') || lower.includes('donasi') || lower.includes('dana')) category = 'Pemasukan';
+      else if (lower.includes('banten') || lower.includes('upacara')) category = 'Keagamaan';
+      else category = 'Operasional';
+    }
+
+    const matchIpfs = desc.match(/\|\s*(ipfs:\/\/[^\s]+)$/);
+    let ipfsUrl = null;
+    if (matchIpfs) {
+      ipfsUrl = matchIpfs[1];
+      desc = desc.substring(0, matchIpfs.index).trim();
+    }
+
+    return { category, desc, ipfsUrl };
   };
 
   return (
@@ -366,13 +447,39 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Donut – Alokasi Dana */}
-            <div
-              className="rounded-2xl border p-5"
-              style={{ background: 'var(--color-bg-card)', borderColor: 'var(--color-border)' }}
-            >
-              <h2 className="text-lg text-[var(--color-text-primary)] mb-4" style={{ fontWeight: 'var(--fw-bold)' }}>Alokasi Dana</h2>
-              <AllocDonut total={balance.balance} />
+            {/* Donut – Alokasi Dana (Flippable Card) */}
+            <div style={{ perspective: '1000px' }} className="relative h-full">
+              <div
+                className="w-full h-full transition-transform duration-700"
+                style={{
+                  transformStyle: 'preserve-3d',
+                  transform: isChartFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
+                }}
+              >
+                {/* FRONT (Pengeluaran) */}
+                <div 
+                  className="w-full h-full"
+                  style={{ backfaceVisibility: 'hidden' }}
+                >
+                  <AllocDonut 
+                    transactions={transactions.filter(t => !t.isIncome).map(t => ({ ...t, ...parseDescription(t.keterangan) }))} 
+                    isIncome={false}
+                    onFlip={() => setIsChartFlipped(true)}
+                  />
+                </div>
+
+                {/* BACK (Pemasukan) */}
+                <div 
+                  className="absolute inset-0 w-full h-full"
+                  style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
+                >
+                  <AllocDonut 
+                    transactions={transactions.filter(t => t.isIncome).map(t => ({ ...t, ...parseDescription(t.keterangan) }))} 
+                    isIncome={true}
+                    onFlip={() => setIsChartFlipped(false)}
+                  />
+                </div>
+              </div>
             </div>
           </div>
 
@@ -383,12 +490,13 @@ export default function HomePage() {
           >
             <div className="flex items-center justify-between px-5 py-4 border-b" style={{ borderColor: 'var(--color-border)' }}>
               <h2 className="text-lg text-[var(--color-text-primary)]" style={{ fontWeight: 'var(--fw-bold)' }}>Transaksi Terbaru</h2>
-              <button
-                className="text-xs transition-colors cursor-pointer"
+              <Link
+                to="/transaksi"
+                className="text-xs transition-colors hover:underline cursor-pointer"
                 style={{ color: 'var(--color-brand-orange)', fontWeight: 'var(--fw-semibold)' }}
               >
                 Lihat Semua
-              </button>
+              </Link>
             </div>
 
             <div className="overflow-x-auto">
@@ -419,7 +527,7 @@ export default function HomePage() {
                     </tr>
                   ) : (
                     transactions.slice(0, 8).map(tx => {
-                      const cat = getCategory(tx.keterangan);
+                      const { category, desc, ipfsUrl } = parseDescription(tx.keterangan);
                       return (
                         <tr
                           key={tx.id}
@@ -441,13 +549,19 @@ export default function HomePage() {
                               >
                                 {tx.isIncome ? <ArrowDown size={14} /> : <ArrowUp size={14} />}
                               </div>
-                              <span
-                                className="truncate max-w-[160px]"
-                                style={{ color: 'var(--color-text-primary)', fontWeight: 'var(--fw-medium)' }}
-                                title={tx.keterangan}
-                              >
-                                {tx.keterangan}
-                              </span>
+                              <div className="flex flex-col">
+                                <span
+                                  className="text-[var(--color-text-primary)] font-medium"
+                                  title={desc}
+                                >
+                                  {desc}
+                                </span>
+                                {ipfsUrl && (
+                                  <a href={ipfsUrl.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/')} target="_blank" rel="noreferrer" className="text-[10px] font-semibold mt-0.5 text-[var(--color-brand-orange)] hover:underline">
+                                    Lihat Bukti
+                                  </a>
+                                )}
+                              </div>
                             </div>
                           </td>
 
@@ -461,7 +575,7 @@ export default function HomePage() {
                                 border: '1px solid var(--color-border-strong)',
                               }}
                             >
-                              {cat}
+                              {category}
                             </span>
                           </td>
 
