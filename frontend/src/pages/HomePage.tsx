@@ -22,33 +22,6 @@ const idr = (n: number) =>
 const shortMonth = (d: Date) =>
   format(d, 'MMM', { locale: idLocale });
 
-// ─── sidebar nav item ─────────────────────────────────────────────────────────
-
-function NavItem({
-  icon, label, active = false, badge,
-}: {
-  icon: React.ReactNode; label: string; active?: boolean; badge?: number;
-}) {
-  return (
-    <button
-      title={label}
-      aria-label={label}
-      aria-current={active ? 'page' : undefined}
-      className={[
-        'relative flex items-center justify-center w-11 h-11 rounded-xl transition-all duration-150 cursor-pointer',
-        active
-          ? 'bg-[var(--color-brand-orange-dim)] text-[var(--color-brand-orange)]'
-          : 'text-[var(--color-text-muted)] hover:bg-[var(--color-bg-card-hover)] hover:text-[var(--color-text-secondary)]',
-      ].join(' ')}
-    >
-      {icon}
-      {badge != null && (
-        <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-[var(--color-brand-orange)]" aria-hidden="true" />
-      )}
-    </button>
-  );
-}
-
 // ─── stat card ────────────────────────────────────────────────────────────────
 
 type StatVariant = 'gold' | 'green' | 'red';
@@ -279,104 +252,8 @@ export default function HomePage() {
   };
 
   return (
-    <div className="flex h-full w-full overflow-hidden" style={{ background: 'var(--color-bg-base)' }}>
-
-      {/* ── Narrow Sidebar (icon-only) ─────────────────────────────── */}
-      <aside
-        className="flex flex-col items-center py-4 gap-2 shrink-0 border-r border-[var(--color-border)]"
-        style={{ width: 64, background: 'var(--color-bg-surface)' }}
-        aria-label="Navigasi utama"
-      >
-        {/* Logo */}
-        <img
-          src="/logo.png"
-          alt="TransParas Logo"
-          className="w-9 h-9 rounded-xl mb-4 shrink-0 object-cover"
-        />
-
-        <nav className="flex flex-col items-center gap-1 flex-1" aria-label="Menu">
-          <NavItem icon={<LayoutDashboard size={18} />} label="Dashboard"    active />
-          <NavItem icon={<ClipboardList   size={18} />} label="Transaksi"                  />
-          <NavItem icon={<TrendingUp      size={18} />} label="Laporan"                    />
-          <NavItem icon={<Shield          size={18} />} label="Keamanan"      badge={1}    />
-        </nav>
-
-        <div className="flex flex-col items-center gap-1 mt-auto">
-          <NavItem icon={<Settings size={18} />} label="Pengaturan" />
-          <NavItem icon={<LogOut   size={18} />} label="Keluar" />
-        </div>
-      </aside>
-
-      {/* ── Main area ──────────────────────────────────────────────── */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-
-        {/* Top bar */}
-        <header
-          className="flex items-center justify-between px-7 shrink-0 border-b border-[var(--color-border)]"
-          style={{ height: 60, background: 'var(--color-bg-surface)' }}
-        >
-          {/* Logo text */}
-          <div className="flex items-center gap-2">
-            <img
-              src="/logo.png"
-              alt=""
-              className="w-6 h-6 rounded-lg object-cover shrink-0"
-              aria-hidden="true"
-            />
-            <span className="text-sm text-[var(--color-text-primary)] uppercase" style={{ fontWeight: 'var(--fw-bold)', letterSpacing: '0.14em' }}>
-              TransParas
-            </span>
-          </div>
-
-          {/* Right actions */}
-          <div className="flex items-center gap-3">
-            {/* Connect / status */}
-            {isConnected ? (
-              <div
-                className="flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-semibold"
-                style={{
-                  background: 'var(--color-brand-orange-dim)',
-                  borderColor: 'rgba(249,115,22,0.3)',
-                  color: 'var(--color-brand-orange)',
-                }}
-              >
-                <span
-                  className="w-2 h-2 rounded-full animate-pulse"
-                  style={{ background: 'var(--color-brand-orange)' }}
-                  aria-hidden="true"
-                />
-                {isOwner ? 'Bendahara Aktif' : 'Dompet Terhubung'}
-              </div>
-            ) : (
-              <Button size="sm" variant="outline" onClick={connectWallet} className="gap-2 rounded-xl">
-                <UserCircle2 size={14} aria-hidden="true" />
-                Connect MetaMask
-              </Button>
-            )}
-
-            <button
-              aria-label="Notifikasi"
-              className="relative w-9 h-9 rounded-xl flex items-center justify-center transition-colors cursor-pointer"
-              style={{ color: 'var(--color-text-muted)' }}
-            >
-              <Bell size={17} />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full" style={{ background: 'var(--color-brand-orange)' }} aria-hidden="true" />
-            </button>
-
-            <div
-              className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold"
-              style={{ background: 'var(--color-bg-card-hover)', color: 'var(--color-text-secondary)' }}
-              aria-label="Profil Bendahara"
-            >
-              B
-            </div>
-          </div>
-        </header>
-
-        {/* Scrollable content */}
-        <main className="flex-1 overflow-y-auto px-7 py-6" style={{ background: 'var(--color-bg-base)' }}>
-
-          {/* Page heading */}
+    <>
+      {/* Page heading */}
           <div className="flex items-start justify-between mb-6">
             <div>
               <h1 className="text-3xl tracking-tight text-[var(--color-text-primary)]" style={{ fontWeight: 'var(--fw-bold)' }}>
@@ -613,9 +490,7 @@ export default function HomePage() {
               </table>
             </div>
           </div>
-
-        </main>
-      </div>
+        {/* Content wrapper removed to use global Layout */}
 
       {/* ── FAB – Tambah Transaksi (Bendahara only) ─────────────────── */}
       {isOwner && (
@@ -777,6 +652,6 @@ export default function HomePage() {
           )}
         </>
       )}
-    </div>
+    </>
   );
 }
