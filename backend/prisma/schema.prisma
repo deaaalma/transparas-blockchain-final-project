@@ -1,9 +1,11 @@
 generator client {
   provider = "prisma-client-js"
+  engineType = "library"
 }
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -19,4 +21,18 @@ model User {
 enum Role {
   USER
   ADMIN
+}
+
+model OrganizationProfile {
+  id            String   @id @default(cuid())
+  name          String   @default("Banjar Adat TransParas")
+  address       String   @default("Jalan Tunon No 35, Mengwi, Badung")
+  foundedYear   String   @default("1990")
+  membersCount  String   @default("150")
+  description   String   @default("Banjar adat percontohan yang menggunakan teknologi blockchain untuk transparansi kas dan dana punia.")
+  leaderName    String   @default("I Wayan Budiarta")
+  treasurerName String   @default("Ni Made Susanti")
+  secretaryName String   @default("I Nyoman Wirawan")
+  logoUrl       String   @default("/logo.png")
+  updatedAt     DateTime @updatedAt
 }

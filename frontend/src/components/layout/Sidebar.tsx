@@ -1,5 +1,5 @@
 import {
-  LayoutDashboard, ClipboardList, TrendingUp, Shield, Settings, LogOut, Plus
+  LayoutDashboard, ClipboardList, TrendingUp, Shield, Settings, LogOut, Plus, Building2
 } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 
@@ -41,7 +41,11 @@ export function Sidebar() {
       aria-label="Navigasi utama"
     >
       {/* Logo */}
-      <div className="flex items-center justify-start mb-6 w-full h-10 px-1 overflow-hidden shrink-0">
+      <NavLink 
+        to="/profil"
+        className="flex items-center justify-start mb-6 w-full h-10 px-1 overflow-hidden shrink-0 cursor-pointer rounded-xl transition-colors hover:bg-[var(--color-bg-card-hover)]"
+        title="Profil Organisasi"
+      >
         <img
           src="/logo.png"
           alt="TransParas Logo"
@@ -50,7 +54,7 @@ export function Sidebar() {
         <span className="ml-3 text-sm uppercase tracking-widest font-bold text-[var(--color-text-primary)] opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
           TransParas
         </span>
-      </div>
+      </NavLink>
 
       <nav className="flex flex-col gap-1 w-full" aria-label="Menu">
         <NavItem icon={<LayoutDashboard size={20} />} label="Dashboard" to="/" />
