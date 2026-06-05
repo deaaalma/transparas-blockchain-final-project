@@ -4,13 +4,14 @@ import HomePage from '../pages/HomePage'
 import LoginPage from '../pages/LoginPage'
 import NotFoundPage from '../pages/NotFoundPage'
 import TambahTransaksi from '../pages/TambahTransaksi'
+import TransactionPage from '../pages/TransactionPage'
 
 export function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
         <Route index element={<HomePage />} />
-        <Route path="transaksi" element={<div className="p-7">Halaman Transaksi (Segera Hadir)</div>} />
+        <Route path="transaksi" element={<TransactionPage />} />
         <Route path="tambah" element={<TambahTransaksi />} />
         <Route path="ekspor" element={<div className="p-7">Halaman Laporan (Segera Hadir)</div>} />
         <Route path="verifikasi" element={<div className="p-7">Halaman Verifikasi (Segera Hadir)</div>} />
