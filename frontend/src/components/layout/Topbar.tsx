@@ -1,4 +1,5 @@
 import { Bell, UserCircle2 } from 'lucide-react';
+import { NavLink } from 'react-router-dom';
 import { useWallet } from '../../features/blockchain/WalletContext';
 import { Button } from '../ui/Button';
 
@@ -58,13 +59,15 @@ export function Topbar() {
           <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full" style={{ background: 'var(--color-brand-orange)' }} aria-hidden="true" />
         </button>
 
-        <div
-          className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold"
+        <NavLink
+          to="/profil"
+          className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-colors hover:ring-2 hover:ring-[var(--color-brand-orange)]"
           style={{ background: 'var(--color-bg-card-hover)', color: 'var(--color-text-secondary)' }}
-          aria-label="Profil Bendahara"
+          title="Profil Organisasi"
+          aria-label="Profil Organisasi"
         >
           B
-        </div>
+        </NavLink>
       </div>
     </header>
   );

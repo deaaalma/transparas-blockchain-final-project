@@ -15,7 +15,7 @@ export function AppRoutes() {
         <Route path="transaksi" element={<TransactionPage />} />
         <Route path="transaksi/:id" element={<TransactionDetailPage />} />
         <Route path="profil" element={<ProfilePage />} />
-        <Route path="ekspor" element={<div className="p-7">Halaman Laporan (Segera Hadir)</div>} />
+
         <Route path="verifikasi" element={<div className="p-7">Halaman Verifikasi (Segera Hadir)</div>} />
         <Route path="pengaturan" element={<div className="p-7">Halaman Pengaturan (Segera Hadir)</div>} />
         <Route path="*" element={<NotFoundPage />} />

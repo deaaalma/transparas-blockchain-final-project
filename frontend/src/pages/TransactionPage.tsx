@@ -7,8 +7,9 @@ import { EmptyState } from '../components/ui/EmptyState';
 import { useToast } from '../components/ui/ToastContext';
 import { format } from 'date-fns';
 import { id as idLocale } from 'date-fns/locale';
-import { RefreshCcw, FileText, Search, Calendar, Filter, X } from 'lucide-react';
+import { RefreshCcw, Search, Calendar, Filter, X, Download, FileText } from 'lucide-react';
 import { Button } from '../components/ui/Button';
+import { ExportModal } from '../components/modals/ExportModal';
 
 const idr = (n: number) => 'Rp ' + new Intl.NumberFormat('id-ID').format(n);
 
@@ -32,6 +33,7 @@ export default function TransactionPage() {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [isExportModalOpen, setIsExportModalOpen] = useState(false);
   const filterRef = useRef<HTMLDivElement>(null);
 
   const fetchTransactions = async () => {
@@ -148,10 +150,16 @@ export default function TransactionPage() {
               Daftar lengkap seluruh pemasukan dan pengeluaran organisasi yang tercatat di dalam blockchain
             </p>
           </div>
-          <Button onClick={handleRefresh} variant="outline" size="sm" className="gap-2 rounded-xl h-[34px]">
-            <RefreshCcw size={14} />
-            Refresh
-          </Button>
+          <div className="flex gap-2">
+            <Button onClick={() => setIsExportModalOpen(true)} variant="outline" size="sm" className="gap-2 rounded-xl h-[34px] border-[var(--color-brand-orange)] text-[var(--color-brand-orange)] hover:bg-[var(--color-brand-orange-dim)]">
+              <Download size={14} />
+              Ekspor
+            </Button>
+            <Button onClick={handleRefresh} variant="outline" size="sm" className="gap-2 rounded-xl h-[34px]">
+              <RefreshCcw size={14} />
+              Refresh
+            </Button>
+          </div>
         </div>
 
         {/* Search and Filter Bar */}
@@ -392,6 +400,13 @@ export default function TransactionPage() {
           </TableBody>
         </Table>
       )}
+
+      {/* Export Modal */}
+      <ExportModal 
+        isOpen={isExportModalOpen} 
+        onClose={() => setIsExportModalOpen(false)} 
+        transactions={transactions} 
+      />
     </div>
   );
 }

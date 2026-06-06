@@ -1,5 +1,5 @@
 import {
-  LayoutDashboard, ClipboardList, TrendingUp, Shield, Settings, LogOut, Plus, Building2
+  LayoutDashboard, ClipboardList, TrendingUp, Shield, Settings, LogOut, Plus
 } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 
@@ -42,9 +42,9 @@ export function Sidebar() {
     >
       {/* Logo */}
       <NavLink 
-        to="/profil"
+        to="/"
         className="flex items-center justify-start mb-6 w-full h-10 px-1 overflow-hidden shrink-0 cursor-pointer rounded-xl transition-colors hover:bg-[var(--color-bg-card-hover)]"
-        title="Profil Organisasi"
+        title="Dashboard Utama"
       >
         <img
           src="/logo.png"
