@@ -3,8 +3,11 @@ import { useWallet } from '../features/blockchain/WalletContext';
 import { Button } from '../components/ui/Button';
 import { useToast } from '../components/ui/ToastContext';
 import { 
-  ShieldCheck, Edit3, Save, X, Copy, Camera
+  ShieldCheck, Edit3, Save, X, Copy, Camera, LogOut
 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../features/auth';
+import { authApi } from '../features/auth/api/authApi';
 
 interface BanjarProfile {
   name: string;
@@ -33,6 +36,8 @@ const DEFAULT_PROFILE: BanjarProfile = {
 export default function ProfilePage() {
   const { address: walletAddress, isConnected } = useWallet();
   const { toast } = useToast();
+  const navigate = useNavigate();
+  const { dispatch } = useAuth();
   
   const [profile, setProfile] = useState<BanjarProfile>(DEFAULT_PROFILE);
   const [isEditing, setIsEditing] = useState(false);
@@ -53,7 +58,24 @@ export default function ProfilePage() {
         if (response.ok) {
           const data = await response.json();
           setProfile(data);
-          setEditForm(data);
+          
+          // Restore draft if exists
+          const draftStr = localStorage.getItem('profileDraft');
+          if (draftStr) {
+            try {
+              const draft = JSON.parse(draftStr);
+              if (draft.isEditing) {
+                setEditForm(draft.editForm);
+                setIsEditing(true);
+              } else {
+                setEditForm(data);
+              }
+            } catch (e) {
+              setEditForm(data);
+            }
+          } else {
+            setEditForm(data);
+          }
         }
       } catch (error) {
         console.error("Gagal load profile dari backend:", error);
@@ -62,9 +84,30 @@ export default function ProfilePage() {
     fetchProfile();
   }, []);
 
+  // Save draft whenever editForm or isEditing changes
+  useEffect(() => {
+    if (isEditing) {
+      localStorage.setItem('profileDraft', JSON.stringify({ editForm, isEditing }));
+    } else {
+      localStorage.removeItem('profileDraft');
+    }
+  }, [editForm, isEditing]);
+
   const handleCopy = (text: string) => {
     navigator.clipboard.writeText(text);
     toast('Berhasil disalin ke clipboard!', 'success');
+  };
+
+  const handleLogout = async () => {
+    try {
+      await authApi.logout();
+      dispatch({ type: 'LOGOUT' });
+      navigate('/login');
+      toast('Berhasil keluar', 'success');
+    } catch (error) {
+      console.error('Logout failed:', error);
+      toast('Gagal keluar', 'error');
+    }
   };
 
   const handleEditToggle = () => {
@@ -73,6 +116,7 @@ export default function ProfilePage() {
       setEditForm(profile);
       setSelectedFile(null);
       setPreviewUrl(null);
+      if (fileInputRef.current) fileInputRef.current.value = '';
       setIsEditing(false);
     } else {
       setIsEditing(true);
@@ -111,19 +155,30 @@ export default function ProfilePage() {
       });
 
       if (!response.ok) {
-        throw new Error('Gagal menyimpan profil');
+        let errorMessage = 'Gagal menyimpan profil';
+        try {
+          const errData = await response.json();
+          if (errData.details) errorMessage += `: ${errData.details}`;
+          else if (errData.error) errorMessage += `: ${errData.error}`;
+        } catch(e) {}
+        throw new Error(errorMessage);
       }
 
       const result = await response.json();
       setProfile(result.data);
       setEditForm(result.data);
+      
+      // Notify other components (like Topbar) about the logo change
+      window.dispatchEvent(new CustomEvent('profileUpdated', { detail: result.data.logoUrl }));
+      
       setIsEditing(false);
       setSelectedFile(null);
       setPreviewUrl(null);
+      if (fileInputRef.current) fileInputRef.current.value = '';
       toast('Profil organisasi berhasil diperbarui!', 'success');
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
-      toast('Terjadi kesalahan saat menyimpan profil', 'error');
+      toast(error.message || 'Terjadi kesalahan saat menyimpan profil', 'error');
     } finally {
       setIsSaving(false);
     }
@@ -310,6 +365,20 @@ export default function ProfilePage() {
             </div>
           </div>
         </div>
+
+        {/* Section: Zona Berbahaya / Logout */}
+        {!isEditing && (
+          <div className="mt-12 flex justify-center border-t border-[var(--color-border)] pt-8">
+            <Button 
+              variant="outline" 
+              onClick={handleLogout}
+              className="rounded-xl px-6 py-2.5 gap-2 text-[var(--color-expense)] border-[var(--color-expense)]/50 hover:border-[var(--color-expense)] hover:bg-[var(--color-expense)]/10 font-medium transition-colors"
+            >
+              <LogOut size={18} />
+              Keluar dari Akun
+            </Button>
+          </div>
+        )}
 
         {/* Save Button */}
         {isEditing && (

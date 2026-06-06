@@ -1,10 +1,31 @@
 import { Bell, UserCircle2 } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import { useWallet } from '../../features/blockchain/WalletContext';
 import { Button } from '../ui/Button';
 
 export function Topbar() {
   const { isConnected, connectWallet, isOwner } = useWallet();
+  const [logoUrl, setLogoUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Initial fetch
+    fetch('/api/v1/profile')
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.logoUrl) setLogoUrl(data.logoUrl);
+      })
+      .catch(console.error);
+
+    // Listen for updates from ProfilePage
+    const handleUpdate = (e: Event) => {
+      const customEvent = e as CustomEvent<string>;
+      setLogoUrl(customEvent.detail);
+    };
+    
+    window.addEventListener('profileUpdated', handleUpdate);
+    return () => window.removeEventListener('profileUpdated', handleUpdate);
+  }, []);
 
   return (
     <header
@@ -61,12 +82,16 @@ export function Topbar() {
 
         <NavLink
           to="/profil"
-          className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-colors hover:ring-2 hover:ring-[var(--color-brand-orange)]"
+          className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-colors hover:ring-2 hover:ring-[var(--color-brand-orange)] overflow-hidden shrink-0"
           style={{ background: 'var(--color-bg-card-hover)', color: 'var(--color-text-secondary)' }}
           title="Profil Organisasi"
           aria-label="Profil Organisasi"
         >
-          B
+          {logoUrl ? (
+            <img src={logoUrl} alt="Profil" className="w-full h-full object-cover" />
+          ) : (
+            'B'
+          )}
         </NavLink>
       </div>
     </header>

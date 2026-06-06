@@ -14,7 +14,7 @@ const storage = new CloudinaryStorage({
   params: async (req, file) => {
     return {
       folder: 'transparas_profiles',
-      format: 'png', // Support multiple tapi kita standardisasi ke png/jpeg di cloudinary
+      allowedFormats: ['jpg', 'png', 'jpeg'],
       public_id: `banjar_logo_${Date.now()}`,
     };
   },
