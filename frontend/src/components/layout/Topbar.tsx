@@ -5,7 +5,7 @@ import { useWallet } from '../../features/blockchain/WalletContext';
 import { Button } from '../ui/Button';
 
 export function Topbar() {
-  const { isConnected, connectWallet, isOwner } = useWallet();
+  const { isConnected, connectWallet, reconnectWallet, isOwner } = useWallet();
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
 
   useEffect(() => {
@@ -49,8 +49,10 @@ export function Topbar() {
       <div className="flex items-center gap-3">
         {/* Connect / status */}
         {isConnected ? (
-          <div
-            className="flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-semibold"
+          <button
+            onClick={reconnectWallet}
+            title="Klik untuk ganti akun (Reconnect)"
+            className="flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-semibold transition-colors hover:brightness-110 cursor-pointer"
             style={{
               background: 'var(--color-brand-orange-dim)',
               borderColor: 'rgba(249,115,22,0.3)',
@@ -63,7 +65,7 @@ export function Topbar() {
               aria-hidden="true"
             />
             {isOwner ? 'Bendahara Aktif' : 'Dompet Terhubung'}
-          </div>
+          </button>
         ) : (
           <Button size="sm" variant="outline" onClick={connectWallet} className="gap-2 rounded-xl">
             <UserCircle2 size={14} aria-hidden="true" />

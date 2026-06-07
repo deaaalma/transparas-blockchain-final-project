@@ -33,8 +33,16 @@ export function useBlockchain() {
         const ethProvider = new BrowserProvider((window as any).ethereum);
         setProvider(ethProvider);
 
+        const network = await ethProvider.getNetwork();
+        const chainId = Number(network.chainId);
+        
+        let dynamicContractAddress = import.meta.env.VITE_CONTRACT_ADDRESS_LOCAL || "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+        if (chainId === 80002) {
+          dynamicContractAddress = import.meta.env.VITE_CONTRACT_ADDRESS_AMOY;
+        }
+
         // Jika dompet belum terhubung, kita gunakan provider (read-only)
-        const readOnlyContract = new Contract(CONTRACT_ADDRESS, CONTRACT_ABI, ethProvider);
+        const readOnlyContract = new Contract(dynamicContractAddress, CONTRACT_ABI, ethProvider);
         setContract(readOnlyContract);
 
         // Cek apakah sudah terhubung sebelumnya
@@ -48,7 +56,7 @@ export function useBlockchain() {
           setSigner(ethSigner);
           
           // Upgrade contract jadi bisa write (pakai signer)
-          const rwContract = new Contract(CONTRACT_ADDRESS, CONTRACT_ABI, ethSigner);
+          const rwContract = new Contract(dynamicContractAddress, CONTRACT_ABI, ethSigner);
           setContract(rwContract);
 
           // Cek apakah owner
@@ -102,6 +110,23 @@ export function useBlockchain() {
         await initBlockchain();
       } catch (err) {
         console.error("Gagal konek wallet:", err);
+        throw err;
+      }
+    } else {
+      alert("Silakan install ekstensi MetaMask!");
+    }
+  };
+
+  const reconnectWallet = async () => {
+    if (typeof window !== 'undefined' && (window as any).ethereum) {
+      try {
+        await (window as any).ethereum.request({
+          method: "wallet_requestPermissions",
+          params: [{ eth_accounts: {} }]
+        });
+        // The accountsChanged event listener will automatically trigger initBlockchain
+      } catch (err) {
+        console.error("Gagal reconnect wallet:", err);
         throw err;
       }
     } else {
@@ -165,6 +190,7 @@ export function useBlockchain() {
     isConnected,
     isLoading,
     connectWallet,
+    reconnectWallet,
     getTransactions,
     getBalance,
     addTransaction

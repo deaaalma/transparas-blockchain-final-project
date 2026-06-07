@@ -8,7 +8,7 @@ import { ethers } from "hardhat";
  * Run: npx hardhat run scripts/seedAmoy.ts --network polygonAmoy
  */
 
-const CONTRACT_ADDRESS = "0x959922bE3CAee4b8Cd9a407cc3ac1C251C2007B1";
+const CONTRACT_ADDRESS = "0xBE4FF6a8A141d05827Fb7581B03e30fe01257f62";
 
 async function main() {
   console.log("🌐 Connecting to Polygon Amoy...");
