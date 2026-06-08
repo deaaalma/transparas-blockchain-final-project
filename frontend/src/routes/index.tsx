@@ -6,12 +6,14 @@ import NotFoundPage from '../pages/NotFoundPage'
 import TransactionPage from '../pages/TransactionPage'
 import TransactionDetailPage from '../pages/TransactionDetailPage'
 import ProfilePage from '../pages/ProfilePage'
+import AnalyticsPage from '../pages/AnalyticsPage'
 
 export function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
         <Route index element={<HomePage />} />
+        <Route path="analytics" element={<AnalyticsPage />} />
         <Route path="transaksi" element={<TransactionPage />} />
         <Route path="transaksi/:id" element={<TransactionDetailPage />} />
         <Route path="profil" element={<ProfilePage />} />

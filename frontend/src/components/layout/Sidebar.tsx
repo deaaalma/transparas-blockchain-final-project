@@ -1,5 +1,5 @@
 import {
-  LayoutDashboard, ClipboardList, TrendingUp, Shield, Settings, LogOut, Plus
+  LayoutDashboard, ClipboardList, TrendingUp, Shield, Settings, LogOut, Plus, PieChart
 } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 
@@ -58,6 +58,7 @@ export function Sidebar() {
 
       <nav className="flex flex-col gap-1 w-full" aria-label="Menu">
         <NavItem icon={<LayoutDashboard size={20} />} label="Dashboard" to="/" />
+        <NavItem icon={<PieChart size={20} />} label="Analytics" to="/analytics" />
         <NavItem icon={<ClipboardList size={20} />} label="Transaksi" to="/transaksi" />
         <NavItem icon={<Shield size={20} />} label="Verifikasi" badge={1} to="/verifikasi" />
       </nav>
