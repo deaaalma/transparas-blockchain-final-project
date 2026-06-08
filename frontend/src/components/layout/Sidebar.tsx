@@ -60,7 +60,7 @@ export function Sidebar() {
         <NavItem icon={<LayoutDashboard size={20} />} label="Dashboard" to="/" />
         <NavItem icon={<PieChart size={20} />} label="Analytics" to="/analytics" />
         <NavItem icon={<ClipboardList size={20} />} label="Transaksi" to="/transaksi" />
-        <NavItem icon={<Shield size={20} />} label="Verifikasi" badge={1} to="/verifikasi" />
+        <NavItem icon={<Shield size={20} />} label="Verifikasi" to="/verifikasi" />
       </nav>
 
       <div className="flex flex-col gap-1 mt-auto w-full">

@@ -137,6 +137,12 @@ export function useBlockchain() {
     }
   };
 
+  const disconnectWallet = () => {
+    setAddress(null);
+    setSigner(null);
+    setIsConnected(false);
+  };
+
   const getTransactions = async (): Promise<Transaction[]> => {
     if (!contract) return [];
     try {

@@ -7,6 +7,7 @@ import TransactionPage from '../pages/TransactionPage'
 import TransactionDetailPage from '../pages/TransactionDetailPage'
 import ProfilePage from '../pages/ProfilePage'
 import AnalyticsPage from '../pages/AnalyticsPage'
+import VerificationPage from '../pages/VerificationPage'
 
 export function AppRoutes() {
   return (
@@ -18,7 +19,7 @@ export function AppRoutes() {
         <Route path="transaksi/:id" element={<TransactionDetailPage />} />
         <Route path="profil" element={<ProfilePage />} />
 
-        <Route path="verifikasi" element={<div className="p-7">Halaman Verifikasi (Segera Hadir)</div>} />
+        <Route path="verifikasi" element={<VerificationPage />} />
         <Route path="pengaturan" element={<div className="p-7">Halaman Pengaturan (Segera Hadir)</div>} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>

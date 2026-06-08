@@ -1,11 +1,11 @@
-import { Bell, UserCircle2 } from 'lucide-react';
+import { Bell, UserCircle2, LogOut } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useWallet } from '../../features/blockchain/WalletContext';
 import { Button } from '../ui/Button';
 
 export function Topbar() {
-  const { isConnected, connectWallet, reconnectWallet, isOwner } = useWallet();
+  const { isConnected, connectWallet, reconnectWallet, disconnectWallet, isOwner } = useWallet();
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
 
   useEffect(() => {
@@ -49,23 +49,33 @@ export function Topbar() {
       <div className="flex items-center gap-3">
         {/* Connect / status */}
         {isConnected ? (
-          <button
-            onClick={reconnectWallet}
-            title="Klik untuk ganti akun (Reconnect)"
-            className="flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-semibold transition-colors hover:brightness-110 cursor-pointer"
-            style={{
-              background: 'var(--color-brand-orange-dim)',
-              borderColor: 'rgba(249,115,22,0.3)',
-              color: 'var(--color-brand-orange)',
-            }}
-          >
-            <span
-              className="w-2 h-2 rounded-full animate-pulse"
-              style={{ background: 'var(--color-brand-orange)' }}
-              aria-hidden="true"
-            />
-            {isOwner ? 'Bendahara Aktif' : 'Dompet Terhubung'}
-          </button>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={reconnectWallet}
+              title="Klik untuk ganti akun (Reconnect)"
+              className="flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-semibold transition-colors hover:brightness-110 cursor-pointer"
+              style={{
+                background: 'var(--color-brand-orange-dim)',
+                borderColor: 'rgba(249,115,22,0.3)',
+                color: 'var(--color-brand-orange)',
+              }}
+            >
+              <span
+                className="w-2 h-2 rounded-full animate-pulse"
+                style={{ background: 'var(--color-brand-orange)' }}
+                aria-hidden="true"
+              />
+              {isOwner ? 'Bendahara Aktif' : 'Dompet Terhubung'}
+            </button>
+            <button
+              onClick={disconnectWallet}
+              title="Simulasikan Warga Biasa (Disconnect)"
+              className="flex items-center justify-center w-8 h-8 rounded-xl border transition-colors hover:bg-[var(--color-bg-card-hover)] cursor-pointer"
+              style={{ borderColor: 'var(--color-border-strong)', color: 'var(--color-expense)' }}
+            >
+              <LogOut size={14} />
+            </button>
+          </div>
         ) : (
           <Button size="sm" variant="outline" onClick={connectWallet} className="gap-2 rounded-xl">
             <UserCircle2 size={14} aria-hidden="true" />

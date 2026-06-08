@@ -13,6 +13,7 @@ interface WalletContextType {
   isLoading: boolean;
   connectWallet: () => Promise<void>;
   reconnectWallet: () => Promise<void>;
+  disconnectWallet: () => void;
   getTransactions: () => Promise<Transaction[]>;
   getBalance: () => Promise<Balance>;
   addTransaction: (keterangan: string, nominal: number, isIncome: boolean) => Promise<any>;
