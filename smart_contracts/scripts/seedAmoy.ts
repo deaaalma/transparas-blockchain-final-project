@@ -85,7 +85,8 @@ async function main() {
   // ─── Run Transactions ──────────────────────────────────────────────────────
   console.log(`\n📝 Akan mencatat ${data.length} transaksi ke blockchain...\n`);
 
-  for (let i = 0; i < data.length; i++) {
+  // Start from i = 5 because the first 5 transactions were already seeded successfully
+  for (let i = 5; i < data.length; i++) {
     const d = data[i];
     const txTime = now - d.timeOffset;
     const jenis = d.isIncome ? "🟢 MASUK  " : "🔴 KELUAR ";

@@ -38,8 +38,11 @@ export function useBlockchain() {
         
         let dynamicContractAddress = import.meta.env.VITE_CONTRACT_ADDRESS_LOCAL || "0x5FbDB2315678afecb367f032d93F642f64180aa3";
         if (chainId === 80002) {
-          dynamicContractAddress = import.meta.env.VITE_CONTRACT_ADDRESS_AMOY;
+          dynamicContractAddress = import.meta.env.VITE_CONTRACT_ADDRESS_AMOY || "0xBE4FF6a8A141d05827Fb7581B03e30fe01257f62";
         }
+        
+        console.log("Connected Chain ID:", chainId);
+        console.log("Using Contract Address:", dynamicContractAddress);
 
         // Jika dompet belum terhubung, kita gunakan provider (read-only)
         const readOnlyContract = new Contract(dynamicContractAddress, CONTRACT_ABI, ethProvider);

@@ -33,7 +33,7 @@ export function Topbar() {
       style={{ height: 60, background: 'var(--color-bg-surface)' }}
     >
       {/* Logo text */}
-      <div className="flex items-center gap-2">
+      <NavLink to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity" title="Ke Dashboard Utama">
         <img
           src="/logo.png"
           alt=""
@@ -43,7 +43,7 @@ export function Topbar() {
         <span className="text-sm text-[var(--color-text-primary)] uppercase" style={{ fontWeight: 'var(--fw-bold)', letterSpacing: '0.14em' }}>
           TransParas
         </span>
-      </div>
+      </NavLink>
 
       {/* Right actions */}
       <div className="flex items-center gap-3">

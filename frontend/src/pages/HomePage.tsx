@@ -156,7 +156,7 @@ function AllocDonut({ transactions, isIncome = false, onFlip }: { transactions: 
 
   return (
     <div className="flex flex-col h-full rounded-2xl border p-5" style={{ background: 'var(--color-bg-card)', borderColor: 'var(--color-border)' }}>
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between items-center mb-4 shrink-0">
         <h2 className="text-lg text-[var(--color-text-primary)]" style={{ fontWeight: 'var(--fw-bold)' }}>
           {isIncome ? 'Pemasukan' : 'Pengeluaran'}
         </h2>
@@ -171,15 +171,15 @@ function AllocDonut({ transactions, isIncome = false, onFlip }: { transactions: 
       </div>
 
       <div className="flex flex-col gap-4 flex-1">
-      <div className="relative flex items-center justify-center" style={{ height: 180 }}>
-        <ResponsiveContainer width="100%" height={180}>
+      <div className="relative flex items-center justify-center shrink-0" style={{ height: 160 }}>
+        <ResponsiveContainer width="100%" height={160}>
           <PieChart>
             <Pie
               data={data}
               cx="50%"
               cy="50%"
-              innerRadius={58}
-              outerRadius={80}
+              innerRadius={50}
+              outerRadius={70}
               startAngle={90}
               endAngle={-270}
               dataKey="value"
@@ -197,7 +197,7 @@ function AllocDonut({ transactions, isIncome = false, onFlip }: { transactions: 
         </div>
       </div>
 
-      <div className="space-y-2.5 max-h-[140px] overflow-y-auto pr-2 custom-scrollbar">
+      <div className="space-y-2.5">
         {total === 0 ? (
           <p className="text-center text-sm text-[var(--color-text-muted)] italic">Belum ada {isIncome ? 'pemasukan' : 'pengeluaran'}</p>
         ) : (
@@ -391,10 +391,10 @@ export default function HomePage() {
 
             {/* Area Chart – Arus Kas Dana */}
             <div
-              className="lg:col-span-2 rounded-2xl border p-5"
+              className="lg:col-span-2 rounded-2xl border p-5 flex flex-col h-full"
               style={{ background: 'var(--color-bg-card)', borderColor: 'var(--color-border)' }}
             >
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center justify-between mb-4 shrink-0">
                 <h2 className="text-lg text-[var(--color-text-primary)]" style={{ fontWeight: 'var(--fw-bold)' }}>Arus Kas Dana</h2>
                 <div className="flex items-center gap-4 text-xs text-[var(--color-text-secondary)]">
                   <span className="flex items-center gap-1.5">
@@ -408,7 +408,7 @@ export default function HomePage() {
                 </div>
               </div>
 
-              <div className="h-48" aria-label="Grafik arus kas dana 6 bulan terakhir">
+              <div className="flex-1 min-h-[192px]" aria-label="Grafik arus kas dana 6 bulan terakhir">
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={chartData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
                     <defs>
@@ -450,7 +450,7 @@ export default function HomePage() {
             {/* Donut – Alokasi Dana (Flippable Card) */}
             <div style={{ perspective: '1000px' }} className="relative h-full">
               <div
-                className="w-full h-full transition-transform duration-700"
+                className="w-full h-full transition-transform duration-700 grid"
                 style={{
                   transformStyle: 'preserve-3d',
                   transform: isChartFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
@@ -459,7 +459,7 @@ export default function HomePage() {
                 {/* FRONT (Pengeluaran) */}
                 <div 
                   className="w-full h-full"
-                  style={{ backfaceVisibility: 'hidden' }}
+                  style={{ backfaceVisibility: 'hidden', gridArea: '1 / 1' }}
                 >
                   <AllocDonut 
                     transactions={transactions.filter(t => !t.isIncome).map(t => ({ ...t, ...parseDescription(t.keterangan) }))} 
@@ -470,8 +470,8 @@ export default function HomePage() {
 
                 {/* BACK (Pemasukan) */}
                 <div 
-                  className="absolute inset-0 w-full h-full"
-                  style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
+                  className="w-full h-full"
+                  style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)', gridArea: '1 / 1' }}
                 >
                   <AllocDonut 
                     transactions={transactions.filter(t => t.isIncome).map(t => ({ ...t, ...parseDescription(t.keterangan) }))} 

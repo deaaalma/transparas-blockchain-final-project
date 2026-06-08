@@ -59,7 +59,6 @@ export function Sidebar() {
       <nav className="flex flex-col gap-1 w-full" aria-label="Menu">
         <NavItem icon={<LayoutDashboard size={20} />} label="Dashboard" to="/" />
         <NavItem icon={<ClipboardList size={20} />} label="Transaksi" to="/transaksi" />
-        <NavItem icon={<TrendingUp size={20} />} label="Laporan" to="/ekspor" />
         <NavItem icon={<Shield size={20} />} label="Verifikasi" badge={1} to="/verifikasi" />
       </nav>
 
