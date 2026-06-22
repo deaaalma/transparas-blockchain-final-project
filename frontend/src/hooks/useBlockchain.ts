@@ -147,14 +147,21 @@ export function useBlockchain() {
     if (!contract) return [];
     try {
       const txs = await contract.getTransactions();
-      return txs.map((tx: any) => ({
-        id: Number(tx.id),
-        keterangan: tx.keterangan,
-        nominal: Number(tx.nominal),
+      return txs.map((tx: any) => {
+        let formattedKeterangan = tx.keterangan;
+        if (formattedKeterangan.includes("Semester 1")) {
+          formattedKeterangan = formattedKeterangan.replace("Semester 1", "Periode Januari-Juni");
+        }
+        
+        return {
+          id: Number(tx.id),
+          keterangan: formattedKeterangan,
+          nominal: Number(tx.nominal),
         isIncome: tx.isIncome,
         timestamp: new Date(Number(tx.timestamp) * 1000),
         addedBy: tx.addedBy
-      }));
+        };
+      });
     } catch (err) {
       console.error("Gagal getTransactions:", err);
       return [];
