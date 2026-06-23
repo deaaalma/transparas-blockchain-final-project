@@ -8,6 +8,7 @@ import {
 import { format, subMonths } from 'date-fns';
 import { id as idLocale } from 'date-fns/locale';
 import { ArrowUp, ArrowDown, TrendingUp, DollarSign } from 'lucide-react';
+import ChatWidget from '../components/ChatWidget/ChatWidget';
 
 // ─── helpers ──────────────────────────────────────────────────────────────────
 const idr = (n: number) => 'Rp ' + new Intl.NumberFormat('id-ID', { maximumFractionDigits: 0 }).format(n);
@@ -82,7 +83,7 @@ export default function AnalyticsPage() {
   })), [transactions]);
 
   // Calculate Insights
-  const { totalIncome, totalExpense, avgIncome, avgExpense, maxExpenseCategory } = useMemo(() => {
+  const { totalIncome, totalExpense, avgIncome, avgExpense, maxExpenseCategory, maxExpenseValue } = useMemo(() => {
     let inc = 0, exp = 0;
     let incCount = 0, expCount = 0;
     const expCategories: Record<string, number> = {};
@@ -112,7 +113,8 @@ export default function AnalyticsPage() {
       totalExpense: exp,
       avgIncome: incCount > 0 ? inc / incCount : 0,
       avgExpense: expCount > 0 ? exp / expCount : 0,
-      maxExpenseCategory: maxCat
+      maxExpenseCategory: maxCat,
+      maxExpenseValue: maxVal
     };
   }, [parsedTxs]);
 
@@ -168,6 +170,26 @@ export default function AnalyticsPage() {
       expenseData: formatDonut(expMap)
     };
   }, [parsedTxs]);
+
+  const systemPrompt = `
+Kamu adalah asisten keuangan AI untuk TransParas, platform transparansi keuangan organisasi Bali berbasis blockchain (Polygon Amoy Testnet).
+
+Laporan yang sedang dilihat pengguna:
+- Organisasi: Organisasi TransParas
+- Total Pemasukan: ${idr(totalIncome)}
+- Total Pengeluaran: ${idr(totalExpense)}
+- Saldo Akhir: ${idr(totalIncome - totalExpense)}
+- Kategori pengeluaran terbesar: ${maxExpenseCategory} (${idr(maxExpenseValue)})
+
+Aturan:
+1. Jelaskan kondisi keuangan dengan bahasa yang mudah dipahami anggota banjar/sekaa.
+2. Sorot kategori pengeluaran signifikan dan berikan insight singkat.
+3. Jawab pertanyaan hanya berdasarkan data di atas — jangan mengarang angka.
+4. Gunakan bahasa Indonesia yang ramah dan lugas.
+5. Jawaban ringkas, maksimal 4 kalimat kecuali diminta detail.
+  `.trim();
+
+  const initialMessage = \`Halo! Aku adalah asisten AI TransParas. Berdasarkan data saat ini, total pemasukan adalah **\${idr(totalIncome)}\** dan pengeluaran terbesar ada di **\${maxExpenseCategory}\** (\${idr(maxExpenseValue)}). Ada yang ingin kamu tanyakan tentang data keuangan ini?\`;
 
   return (
     <div className="flex flex-col h-full overflow-y-auto px-7 py-8 custom-scrollbar">
@@ -277,6 +299,7 @@ export default function AnalyticsPage() {
 
         </div>
       )}
+      <ChatWidget systemPrompt={systemPrompt} initialMessage={initialMessage} />
     </div>
   );
 }
