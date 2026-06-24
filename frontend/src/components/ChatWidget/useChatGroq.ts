@@ -27,16 +27,10 @@ export function useChatGroq(systemPrompt: string) {
     setError(null);
 
     try {
-      const apiUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
-      const res = await fetch(`${apiUrl}/api/v1/chat`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: payload }),
-      });
+      const { api } = await import('../../../lib/axios');
+      const res = await api.post('/chat', { messages: payload });
 
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-
-      const data = await res.json();
+      const data = res.data;
       const assistantMsg: ChatMessage = { role: 'assistant', content: data.reply };
       setMessages((prev) => [...prev, assistantMsg]);
 
