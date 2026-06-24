@@ -18,7 +18,7 @@ export const corsConfig: CorsOptions = {
     if (!origin || allowed.includes(origin) || allowed.includes(origin.replace(/\/$/, '')) || isVercelPreview) {
       callback(null, true)
     } else {
-      callback(new Error(`Origin ${origin} not allowed by CORS`))
+      callback(null, false)
     }
   },
   credentials: true,
