@@ -427,7 +427,7 @@ export default function HomePage() {
               </div>
 
               <div className="flex-1 min-h-[192px]" style={{ minWidth: 0 }} aria-label="Grafik arus kas dana 6 bulan terakhir">
-                <ResponsiveContainer width="100%" height="100%">
+                <ResponsiveContainer width="100%" height={192}>
                   <AreaChart data={chartData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
                     <defs>
                       <linearGradient id="gradIn" x1="0" y1="0" x2="0" y2="1">
