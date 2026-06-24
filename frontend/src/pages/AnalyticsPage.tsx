@@ -207,7 +207,7 @@ Aturan:
 5. Jawaban ringkas, maksimal 4 kalimat kecuali diminta detail.
   `.trim();
 
-  const initialMessage = `Halo! Aku adalah asisten AI TransParas. Berdasarkan data saat ini, total pemasukan adalah **${idr(totalIncome)}** dan pengeluaran terbesar ada di **${maxExpenseCategory}** (${idr(maxExpenseValue)}). Ada yang ingin kamu tanyakan tentang laporan ini? (Misal: "Bulan apa pengeluaran paling hemat?")`;
+  const initialMessage = `Halo! Aku adalah asisten AI TransParas. Berdasarkan data saat ini, total pemasukan adalah ${idr(totalIncome)} dan pengeluaran terbesar ada di ${maxExpenseCategory} (${idr(maxExpenseValue)}). Ada yang ingin kamu tanyakan tentang laporan ini? (Misal: "Bulan apa pengeluaran paling hemat?")`;
 
   return (
     <div className="flex flex-col h-full overflow-y-auto px-7 py-8 custom-scrollbar">
@@ -317,7 +317,7 @@ Aturan:
 
         </div>
       )}
-      <ChatWidget systemPrompt={systemPrompt} initialMessage={initialMessage} />
+      <ChatWidget systemPrompt={systemPrompt} initialMessage={initialMessage} autoOpen={true} />
     </div>
   );
 }

@@ -16,7 +16,24 @@ function TypingDots() {
 }
 
 // Komponen satu baris pesan
-function MessageBubble({ role, content }: { role: string; content: string }) {
+function MessageBubble({ role, content, typewriter = false }: { role: string; content: string; typewriter?: boolean }) {
+  const [displayedContent, setDisplayedContent] = useState(typewriter ? '' : content);
+
+  useEffect(() => {
+    if (!typewriter) return;
+    
+    let i = 0;
+    const interval = setInterval(() => {
+      setDisplayedContent(content.substring(0, i + 1));
+      i++;
+      if (i >= content.length) {
+        clearInterval(interval);
+      }
+    }, 25); // Kecepatan mengetik 25ms per karakter
+
+    return () => clearInterval(interval);
+  }, [content, typewriter]);
+
   return (
     <div className={`cw-message cw-message--${role} cw-message--enter`}>
       {role === 'assistant' && (
@@ -28,8 +45,8 @@ function MessageBubble({ role, content }: { role: string; content: string }) {
         </div>
       )}
       <div className={`cw-bubble cw-bubble--${role}`}>
-        {content.split('\n').map((line, i) => (
-          <span key={i}>{line}{i < content.split('\n').length - 1 && <br />}</span>
+        {displayedContent.split('\n').map((line, i) => (
+          <span key={i}>{line}{i < displayedContent.split('\n').length - 1 && <br />}</span>
         ))}
       </div>
     </div>
@@ -39,10 +56,11 @@ function MessageBubble({ role, content }: { role: string; content: string }) {
 interface ChatWidgetProps {
   systemPrompt: string;
   initialMessage: string;
+  autoOpen?: boolean;
 }
 
-export default function ChatWidget({ systemPrompt, initialMessage }: ChatWidgetProps) {
-  const [isOpen, setIsOpen] = useState(false);
+export default function ChatWidget({ systemPrompt, initialMessage, autoOpen = false }: ChatWidgetProps) {
+  const [isOpen, setIsOpen] = useState(autoOpen);
   const [input, setInput] = useState('');
   const [hasOpened, setHasOpened] = useState(false);
   const [isTypingInitial, setIsTypingInitial] = useState(false);
@@ -131,7 +149,7 @@ export default function ChatWidget({ systemPrompt, initialMessage }: ChatWidgetP
 
           {/* Pesan pembuka otomatis */}
           {showInitial && initialMessage && (
-            <MessageBubble role="assistant" content={initialMessage} />
+            <MessageBubble role="assistant" content={initialMessage} typewriter={true} />
           )}
 
           {messages.map((msg, i) => (
