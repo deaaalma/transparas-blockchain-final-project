@@ -28,7 +28,7 @@ export function useChatGroq(systemPrompt: string) {
 
     try {
       const apiUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
-      const res = await fetch(`${apiUrl}/api/chat`, {
+      const res = await fetch(`${apiUrl}/api/v1/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ messages: payload }),
