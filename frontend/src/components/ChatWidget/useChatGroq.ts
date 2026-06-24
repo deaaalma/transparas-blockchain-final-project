@@ -39,7 +39,7 @@ export function useChatGroq(systemPrompt: string) {
       setError('Gagal terhubung. Coba lagi.');
       setMessages((prev) => [
         ...prev,
-        { role: 'assistant', content: '⚠️ Maaf, terjadi kesalahan. Silakan coba lagi.' },
+        { role: 'assistant', content: `⚠️ Error: ${err instanceof Error ? err.message : String(err)}` },
       ]);
     } finally {
       setLoading(false);
