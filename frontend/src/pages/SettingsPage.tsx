@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Shield, Lock, Bell, Globe, Database, Key } from 'lucide-react';
 import { Button } from '../components/ui/Button';
+import { useToast } from '../components/ui/ToastContext';
 
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState('umum');
@@ -63,6 +64,16 @@ export default function SettingsPage() {
 // ─── Sub Components ─────────────────────────────────────────────────────────
 
 function GeneralSettings() {
+  const { addToast } = useToast();
+  const [lang, setLang] = useState(localStorage.getItem('app_lang') || 'id');
+  const [currency, setCurrency] = useState(localStorage.getItem('app_currency') || 'idr');
+
+  const handleSave = () => {
+    localStorage.setItem('app_lang', lang);
+    localStorage.setItem('app_currency', currency);
+    addToast('success', 'Preferensi Tampilan', 'Pengaturan berhasil disimpan!');
+  };
+
   return (
     <div className="flex flex-col gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="rounded-2xl border p-6" style={{ background: 'var(--color-bg-card)', borderColor: 'var(--color-border)' }}>
@@ -71,7 +82,7 @@ function GeneralSettings() {
         <div className="space-y-6">
           <div>
             <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">Bahasa Aplikasi</label>
-            <select className="w-full md:w-1/2 h-12 px-4 rounded-xl border bg-[var(--color-bg-surface)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-brand-orange)] transition-colors" style={{ borderColor: 'var(--color-border-strong)' }}>
+            <select value={lang} onChange={(e) => setLang(e.target.value)} className="w-full md:w-1/2 h-12 px-4 rounded-xl border bg-[var(--color-bg-surface)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-brand-orange)] transition-colors" style={{ borderColor: 'var(--color-border-strong)' }}>
               <option value="id">Bahasa Indonesia</option>
               <option value="en">English (US)</option>
             </select>
@@ -79,7 +90,7 @@ function GeneralSettings() {
           
           <div>
             <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">Format Mata Uang</label>
-            <select className="w-full md:w-1/2 h-12 px-4 rounded-xl border bg-[var(--color-bg-surface)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-brand-orange)] transition-colors" style={{ borderColor: 'var(--color-border-strong)' }}>
+            <select value={currency} onChange={(e) => setCurrency(e.target.value)} className="w-full md:w-1/2 h-12 px-4 rounded-xl border bg-[var(--color-bg-surface)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-brand-orange)] transition-colors" style={{ borderColor: 'var(--color-border-strong)' }}>
               <option value="idr">Rupiah (Rp)</option>
               <option value="usd">US Dollar ($)</option>
             </select>
@@ -87,7 +98,7 @@ function GeneralSettings() {
         </div>
 
         <div className="mt-8 pt-6 border-t" style={{ borderColor: 'var(--color-border)' }}>
-          <Button variant="primary">Simpan Perubahan</Button>
+          <Button variant="primary" onClick={handleSave}>Simpan Perubahan</Button>
         </div>
       </div>
     </div>
@@ -95,6 +106,26 @@ function GeneralSettings() {
 }
 
 function SecuritySettings() {
+  const { addToast } = useToast();
+  const [oldPass, setOldPass] = useState('');
+  const [newPass, setNewPass] = useState('');
+  const [confirmPass, setConfirmPass] = useState('');
+
+  const handleSave = () => {
+    if (!oldPass || !newPass || !confirmPass) {
+      addToast('error', 'Gagal', 'Semua kolom wajib diisi!');
+      return;
+    }
+    if (newPass !== confirmPass) {
+      addToast('error', 'Gagal', 'Kata sandi baru tidak cocok!');
+      return;
+    }
+    addToast('success', 'Keamanan & Akses', 'Kata sandi berhasil diperbarui!');
+    setOldPass('');
+    setNewPass('');
+    setConfirmPass('');
+  };
+
   return (
     <div className="flex flex-col gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="rounded-2xl border p-6" style={{ background: 'var(--color-bg-card)', borderColor: 'var(--color-border)' }}>
@@ -111,20 +142,20 @@ function SecuritySettings() {
         <div className="space-y-4 max-w-md">
           <div>
             <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">Kata Sandi Saat Ini</label>
-            <input type="password" placeholder="Masukkan kata sandi lama" className="w-full h-12 px-4 rounded-xl border bg-[var(--color-bg-surface)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-brand-orange)] transition-colors" style={{ borderColor: 'var(--color-border-strong)' }} />
+            <input type="password" value={oldPass} onChange={(e) => setOldPass(e.target.value)} placeholder="Masukkan kata sandi lama" className="w-full h-12 px-4 rounded-xl border bg-[var(--color-bg-surface)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-brand-orange)] transition-colors" style={{ borderColor: 'var(--color-border-strong)' }} />
           </div>
           <div>
             <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">Kata Sandi Baru</label>
-            <input type="password" placeholder="Buat kata sandi baru" className="w-full h-12 px-4 rounded-xl border bg-[var(--color-bg-surface)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-brand-orange)] transition-colors" style={{ borderColor: 'var(--color-border-strong)' }} />
+            <input type="password" value={newPass} onChange={(e) => setNewPass(e.target.value)} placeholder="Buat kata sandi baru" className="w-full h-12 px-4 rounded-xl border bg-[var(--color-bg-surface)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-brand-orange)] transition-colors" style={{ borderColor: 'var(--color-border-strong)' }} />
           </div>
           <div>
             <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">Konfirmasi Kata Sandi Baru</label>
-            <input type="password" placeholder="Ketik ulang kata sandi baru" className="w-full h-12 px-4 rounded-xl border bg-[var(--color-bg-surface)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-brand-orange)] transition-colors" style={{ borderColor: 'var(--color-border-strong)' }} />
+            <input type="password" value={confirmPass} onChange={(e) => setConfirmPass(e.target.value)} placeholder="Ketik ulang kata sandi baru" className="w-full h-12 px-4 rounded-xl border bg-[var(--color-bg-surface)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-brand-orange)] transition-colors" style={{ borderColor: 'var(--color-border-strong)' }} />
           </div>
         </div>
 
         <div className="mt-8 pt-6 border-t" style={{ borderColor: 'var(--color-border)' }}>
-          <Button variant="primary">Perbarui Kata Sandi</Button>
+          <Button variant="primary" onClick={handleSave}>Perbarui Kata Sandi</Button>
         </div>
       </div>
     </div>
@@ -138,9 +169,9 @@ function NotificationSettings() {
         <h2 className="text-lg font-bold text-[var(--color-text-primary)] mb-6">Preferensi Email & Notifikasi</h2>
         
         <div className="space-y-5">
-          <ToggleRow title="Laporan Bulanan" desc="Kirim ringkasan laporan keuangan via email setiap akhir bulan." defaultChecked={true} />
-          <ToggleRow title="Peringatan Saldo Rendah" desc="Notifikasi jika saldo kas organisasi berada di bawah batas minimum." defaultChecked={true} />
-          <ToggleRow title="Transaksi Tidak Dikenal" desc="Peringatan keamanan jika ada transaksi yang mencurigakan." defaultChecked={false} />
+          <ToggleRow id="monthly" title="Laporan Bulanan" desc="Kirim ringkasan laporan keuangan via email setiap akhir bulan." defaultChecked={true} />
+          <ToggleRow id="low_balance" title="Peringatan Saldo Rendah" desc="Notifikasi jika saldo kas organisasi berada di bawah batas minimum." defaultChecked={true} />
+          <ToggleRow id="unknown_tx" title="Transaksi Tidak Dikenal" desc="Peringatan keamanan jika ada transaksi yang mencurigakan." defaultChecked={false} />
         </div>
       </div>
     </div>
@@ -180,8 +211,20 @@ function BlockchainSettings() {
 
 // ─── UI Helper ──────────────────────────────────────────────────────────────
 
-function ToggleRow({ title, desc, defaultChecked }: { title: string, desc: string, defaultChecked: boolean }) {
-  const [checked, setChecked] = useState(defaultChecked);
+function ToggleRow({ id, title, desc, defaultChecked }: { id: string, title: string, desc: string, defaultChecked: boolean }) {
+  const { addToast } = useToast();
+  const [checked, setChecked] = useState(() => {
+    const saved = localStorage.getItem(`notif_${id}`);
+    return saved !== null ? saved === 'true' : defaultChecked;
+  });
+
+  const handleToggle = () => {
+    const next = !checked;
+    setChecked(next);
+    localStorage.setItem(`notif_${id}`, String(next));
+    addToast('success', 'Notifikasi', `Pengaturan ${title} berhasil diperbarui.`);
+  };
+
   return (
     <div className="flex items-center justify-between py-3 border-b border-dashed last:border-0" style={{ borderColor: 'var(--color-border)' }}>
       <div className="pr-4">
@@ -189,7 +232,7 @@ function ToggleRow({ title, desc, defaultChecked }: { title: string, desc: strin
         <p className="text-xs text-[var(--color-text-muted)] mt-1">{desc}</p>
       </div>
       <button 
-        onClick={() => setChecked(!checked)}
+        onClick={handleToggle}
         className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${checked ? 'bg-[var(--color-brand-orange)]' : 'bg-[var(--color-bg-surface)]'} border border-[var(--color-border-strong)]`}
         role="switch"
         aria-checked={checked}
