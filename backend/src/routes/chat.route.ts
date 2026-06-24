@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express'
 
-import dns from 'node:dns'
+import dns from 'dns'
 dns.setDefaultResultOrder('ipv4first')
 
 const router = Router()
