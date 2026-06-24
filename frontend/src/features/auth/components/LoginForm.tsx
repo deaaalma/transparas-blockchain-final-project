@@ -21,7 +21,7 @@ export function LoginForm() {
         const res = await authApi.login({ email: String(vals.email), password: String(vals.password) })
         localStorage.setItem('token', res.token)
         dispatch({ type: 'SET_USER', payload: res.user })
-        navigate('/')
+        navigate('/admin')
       } catch (err) {
         console.error('Login failed', err)
         alert('Gagal masuk. Periksa kembali email dan kata sandi Anda.')

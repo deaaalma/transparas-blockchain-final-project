@@ -1,7 +1,7 @@
 import {
   LayoutDashboard, ClipboardList, Shield, Settings, LogOut, PieChart
 } from 'lucide-react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 
 function NavItem({
   icon, label, to, badge,
@@ -34,6 +34,13 @@ function NavItem({
 }
 
 export function Sidebar() {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    navigate('/');
+  };
+
   return (
     <aside
       className="group flex flex-col py-4 shrink-0 border-r border-[var(--color-border)] transition-[width] duration-300 ease-in-out w-16 hover:w-60 z-50 overflow-hidden px-2.5"
@@ -42,7 +49,8 @@ export function Sidebar() {
     >
       {/* Logo */}
       <NavLink 
-        to="/"
+        to="/admin"
+        end
         className="flex items-center justify-start mb-6 w-full h-10 px-1 overflow-hidden shrink-0 cursor-pointer rounded-xl transition-colors hover:bg-[var(--color-bg-card-hover)]"
         title="Dashboard Utama"
       >
@@ -57,15 +65,16 @@ export function Sidebar() {
       </NavLink>
 
       <nav className="flex flex-col gap-1 w-full" aria-label="Menu">
-        <NavItem icon={<LayoutDashboard size={20} />} label="Dashboard" to="/" />
-        <NavItem icon={<PieChart size={20} />} label="Analytics" to="/analytics" />
-        <NavItem icon={<ClipboardList size={20} />} label="Transaksi" to="/transaksi" />
-        <NavItem icon={<Shield size={20} />} label="Verifikasi" to="/verifikasi" />
+        <NavItem icon={<LayoutDashboard size={20} />} label="Dashboard" to="/admin" />
+        <NavItem icon={<PieChart size={20} />} label="Analytics" to="/admin/analytics" />
+        <NavItem icon={<ClipboardList size={20} />} label="Transaksi" to="/admin/transaksi" />
+        <NavItem icon={<Shield size={20} />} label="Verifikasi" to="/admin/verifikasi" />
       </nav>
 
       <div className="flex flex-col gap-1 mt-auto w-full">
-        <NavItem icon={<Settings size={20} />} label="Pengaturan" to="/pengaturan" />
+        <NavItem icon={<Settings size={20} />} label="Pengaturan" to="/admin/pengaturan" />
         <button
+          onClick={handleLogout}
           className="relative flex items-center justify-start w-11 group-hover:w-full h-11 rounded-xl transition-all duration-300 cursor-pointer overflow-hidden px-3 shrink-0 text-[var(--color-text-muted)] hover:bg-[var(--color-bg-card-hover)] hover:text-[var(--color-text-secondary)]"
           title="Keluar"
         >
