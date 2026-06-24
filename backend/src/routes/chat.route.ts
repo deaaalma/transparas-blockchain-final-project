@@ -32,7 +32,7 @@ router.post('/', async (req: Request, res: Response) => {
       return res.status(response.status).json({ error: err })
     }
 
-    const data = await response.json()
+    const data = await response.json() as any
     const reply = data.choices[0].message.content
     res.json({ reply })
 
