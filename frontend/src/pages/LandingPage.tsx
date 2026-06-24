@@ -34,8 +34,7 @@ export default function LandingPage() {
         <div className="absolute inset-0 bg-[#0c0c0c]/60 backdrop-blur-[2px]"></div>
       </div>
 
-      <div className="hidden md:block pointer-events-none fixed inset-y-0 left-1/2 -translate-x-[calc(50%+36rem)] w-px bg-white/5 z-[5]" />
-      <div className="hidden md:block pointer-events-none fixed inset-y-0 left-1/2 translate-x-[calc(-50%+36rem)] w-px bg-white/5 z-[5]" />
+
 
       {/* SVG Filters */}
       <svg className="hidden">
@@ -53,7 +52,7 @@ export default function LandingPage() {
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
-          className="max-w-6xl mx-auto px-6 py-6 flex items-center justify-between"
+          className="max-w-7xl mx-auto px-6 py-6 flex items-center justify-between"
         >
           <div className="flex items-center gap-3">
             <LogoMark />
@@ -144,7 +143,7 @@ export default function LandingPage() {
           transition={{ delay: 0.9 }}
           className="h-10 bg-black/40 backdrop-blur-md border-t border-b border-white/10 mt-10"
         >
-          <div className="max-w-6xl mx-auto px-6 h-full flex items-center justify-between text-xs text-white/70">
+          <div className="max-w-7xl mx-auto px-6 h-full flex items-center justify-between text-xs text-white/70">
             <div className="flex items-center gap-4">
               <Hexagon size={14} className="text-[var(--color-brand-orange)]" />
               <span className="font-bold text-white">TransParas</span>
@@ -166,7 +165,7 @@ export default function LandingPage() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="max-w-6xl mx-auto px-6 py-16 md:py-24"
+          className="max-w-7xl mx-auto px-6 py-16 md:py-24"
         >
           <div className="relative rounded-2xl overflow-hidden border border-white/10 bg-[#0e1014]/90 backdrop-blur-2xl shadow-2xl">
             {/* Title bar */}
@@ -242,7 +241,7 @@ export default function LandingPage() {
         </motion.section>
 
         {/* Section 5 - Features Triage */}
-        <section className="max-w-6xl mx-auto px-6 py-20 md:py-28">
+        <section className="max-w-7xl mx-auto px-6 py-20 md:py-28">
           <div className="grid md:grid-cols-2 gap-10 md:gap-16 items-start">
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
@@ -295,7 +294,7 @@ export default function LandingPage() {
         </section>
 
         {/* Section 6 - Testimonials */}
-        <section className="max-w-6xl mx-auto px-6 py-20 md:py-28 border-t border-white/10">
+        <section className="max-w-7xl mx-auto px-6 py-20 md:py-28 border-t border-white/10">
           <div className="text-center mb-16">
             <SectionEyebrow label="Kepercayaan Publik" />
             <h2 className="mt-4 text-3xl font-semibold">Mengembalikan Kepercayaan Warga</h2>
@@ -343,7 +342,7 @@ export default function LandingPage() {
         </section>
 
         {/* Section 7 - Final CTA */}
-        <section className="max-w-6xl mx-auto px-6 py-20 md:py-32">
+        <section className="max-w-7xl mx-auto px-6 py-20 md:py-32">
           <motion.div 
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
