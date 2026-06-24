@@ -60,7 +60,7 @@
     overflow: hidden;
   }
 
-  #root { height: 100vh; display: flex; }
+  #root { height: 100vh; width: 100%; display: flex; }
 
   /* WCAG focus ring */
   :focus-visible {

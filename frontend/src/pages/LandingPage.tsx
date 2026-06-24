@@ -24,7 +24,7 @@ const SectionEyebrow = ({ label, tag }: { label: string; tag?: string }) => (
 
 export default function LandingPage() {
   return (
-    <div className="relative min-h-screen overflow-x-hidden bg-[#0c0c0c] text-white">
+    <div className="relative w-full h-full min-h-screen flex-1 overflow-x-hidden overflow-y-auto bg-[#0c0c0c] text-white">
       {/* Global Background Video */}
       <div className="fixed inset-0 z-0 pointer-events-none">
         <video autoPlay loop muted playsInline
