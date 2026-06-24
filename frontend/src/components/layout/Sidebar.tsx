@@ -59,8 +59,8 @@ export function Sidebar() {
           alt="TransParas Logo"
           className="w-9 h-9 rounded-xl shrink-0 object-cover"
         />
-        <span className="ml-3 text-sm uppercase tracking-widest font-bold text-[var(--color-text-primary)] opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
-          TransParas
+        <span className="ml-3 text-lg font-bold tracking-tight text-[var(--color-text-primary)] opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+          Trans<span className="text-[var(--color-brand-orange)]">Paras</span>
         </span>
       </NavLink>
 
