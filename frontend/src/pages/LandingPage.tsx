@@ -87,7 +87,7 @@ export default function LandingPage() {
         </motion.nav>
 
         {/* Section 2 - Hero */}
-        <section className="pt-16 md:pt-28 pb-20 text-center flex flex-col items-center px-4">
+        <section className="min-h-[calc(100vh-120px)] flex flex-col items-center justify-center text-center px-4 pb-10">
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -96,7 +96,7 @@ export default function LandingPage() {
           >
             <div className="text-white mb-2">Keuangan Desa.</div>
             <div 
-              className="animate-shiny inline-block"
+              className="animate-shiny inline-block pb-2"
               style={{
                 backgroundImage: 'linear-gradient(to right, #ff6a00 0%, #ff9a44 20%, #ffd494 40%, #ffffff 50%, #ffd494 60%, #ff9a44 80%, #ff6a00 100%)',
                 backgroundSize: '200% auto',
