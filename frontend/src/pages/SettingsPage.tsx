@@ -24,9 +24,9 @@ export default function SettingsPage() {
         </p>
       </div>
 
-      <div className="flex flex-col md:flex-row gap-8">
-        {/* Sidebar Nav */}
-        <div className="w-full md:w-64 shrink-0 flex flex-col gap-2">
+      <div className="flex flex-col gap-8">
+        {/* Horizontal Nav */}
+        <div className="flex flex-row gap-1 overflow-x-auto border-b" style={{ borderColor: 'var(--color-border)' }}>
           {tabs.map(tab => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -34,13 +34,14 @@ export default function SettingsPage() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
+                className={`flex items-center gap-2 px-6 py-3 text-sm font-medium transition-all whitespace-nowrap border-b-2 -mb-[1px] ${
                   isActive 
-                    ? 'bg-[var(--color-brand-orange)] text-white shadow-lg shadow-[var(--color-brand-orange)]/20' 
-                    : 'text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-surface)] hover:text-[var(--color-text-primary)]'
+                    ? 'border-[var(--color-brand-orange)] text-[var(--color-brand-orange)] bg-[var(--color-brand-orange)]/5' 
+                    : 'border-transparent text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-surface)]'
                 }`}
+                style={isActive ? { borderTopLeftRadius: '0.5rem', borderTopRightRadius: '0.5rem' } : { borderRadius: '0.5rem' }}
               >
-                <Icon size={18} />
+                <Icon size={16} />
                 {tab.label}
               </button>
             );
@@ -48,7 +49,7 @@ export default function SettingsPage() {
         </div>
 
         {/* Content Area */}
-        <div className="flex-1 max-w-3xl">
+        <div className="w-full max-w-4xl">
           {activeTab === 'umum' && <GeneralSettings />}
           {activeTab === 'keamanan' && <SecuritySettings />}
           {activeTab === 'notifikasi' && <NotificationSettings />}
