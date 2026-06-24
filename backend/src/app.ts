@@ -10,6 +10,8 @@ import { notFound } from './middlewares/notFound'
 
 const app = express()
 
+app.set('trust proxy', 1)
+
 app.use(helmet())
 app.use(cors(corsConfig))
 app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 100 }))

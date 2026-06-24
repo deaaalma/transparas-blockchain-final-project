@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useBlockchain, type Transaction } from '../hooks/useBlockchain';
 import { Skeleton } from '../components/ui/Skeleton';
 import { EmptyState } from '../components/ui/EmptyState';
@@ -7,7 +7,7 @@ import { Button } from '../components/ui/Button';
 import { format } from 'date-fns';
 import { id as idLocale } from 'date-fns/locale';
 import {
-  ArrowLeft, FileText, AlertTriangle, ChevronUp, ChevronDown, CheckCircle2, Copy
+  FileText, AlertTriangle, ChevronUp, ChevronDown, Copy
 } from 'lucide-react';
 import { useToast } from '../components/ui/ToastContext';
 

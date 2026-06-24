@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useBlockchain, type Transaction } from '../hooks/useBlockchain';
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '../components/ui/Table';
@@ -7,7 +7,7 @@ import { EmptyState } from '../components/ui/EmptyState';
 import { useToast } from '../components/ui/ToastContext';
 import { format } from 'date-fns';
 import { id as idLocale } from 'date-fns/locale';
-import { RefreshCcw, Search, Calendar, Filter, X, Download, FileText } from 'lucide-react';
+import { RefreshCcw, Search, Filter, X, Download, FileText } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { ExportModal } from '../components/modals/ExportModal';
 
@@ -36,7 +36,7 @@ export default function TransactionPage() {
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
   const filterRef = useRef<HTMLDivElement>(null);
 
-  const fetchTransactions = async () => {
+  const fetchTransactions = useCallback(async () => {
     setIsLoading(true);
     try {
       const data = await getTransactions();
@@ -49,7 +49,7 @@ export default function TransactionPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [getTransactions, toast]);
 
   const parseDescription = (raw: string) => {
     const matchCat = raw.match(/^\[(.*?)\]\s*/);
@@ -80,11 +80,12 @@ export default function TransactionPage() {
   useEffect(() => {
     document.title = 'Transactions | TransParas';
     if (isConnected) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       fetchTransactions();
     } else {
       setIsLoading(false);
     }
-  }, [isConnected]);
+  }, [isConnected, fetchTransactions]);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {

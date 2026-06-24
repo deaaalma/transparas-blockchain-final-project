@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { ethers, BrowserProvider, Contract } from 'ethers';
-import { CONTRACT_ADDRESS, CONTRACT_ABI } from '../constants/blockchain';
+import { CONTRACT_ABI } from '../constants/blockchain';
 
 export interface Transaction {
   id: number;
@@ -17,6 +17,14 @@ export interface Balance {
   balance: number;
 }
 
+interface MetaMaskEthereum {
+  on(event: 'accountsChanged', callback: (accounts: string[]) => void): void;
+  on(event: 'chainChanged', callback: () => void): void;
+  removeAllListeners(event: string): void;
+  request(args: { method: string; params?: unknown[] }): Promise<unknown>;
+  send(method: string, params: unknown[]): Promise<unknown>;
+}
+
 export function useBlockchain() {
   const [provider, setProvider] = useState<BrowserProvider | null>(null);
   const [signer, setSigner] = useState<ethers.Signer | null>(null);
@@ -28,9 +36,10 @@ export function useBlockchain() {
 
   // Inisialisasi Ethers provider dan contract
   const initBlockchain = useCallback(async () => {
-    if (typeof window !== 'undefined' && (window as any).ethereum) {
+    const ethereum = (window as unknown as { ethereum?: MetaMaskEthereum }).ethereum;
+    if (typeof window !== 'undefined' && ethereum) {
       try {
-        const ethProvider = new BrowserProvider((window as any).ethereum);
+        const ethProvider = new BrowserProvider(ethereum as unknown as ethers.Eip1193Provider);
         setProvider(ethProvider);
 
         const network = await ethProvider.getNetwork();
@@ -78,11 +87,13 @@ export function useBlockchain() {
   }, []);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     initBlockchain();
 
     // Listener jika user ganti akun di MetaMask
-    if ((window as any).ethereum) {
-      (window as any).ethereum.on('accountsChanged', (accounts: string[]) => {
+    const ethereum = (window as unknown as { ethereum?: MetaMaskEthereum }).ethereum;
+    if (ethereum) {
+      ethereum.on('accountsChanged', (accounts: string[]) => {
         if (accounts.length > 0) {
           initBlockchain(); // reload
         } else {
@@ -93,15 +104,15 @@ export function useBlockchain() {
           setIsOwner(false);
         }
       });
-      (window as any).ethereum.on('chainChanged', () => {
+      ethereum.on('chainChanged', () => {
         window.location.reload();
       });
     }
 
     return () => {
-      if ((window as any).ethereum) {
-        (window as any).ethereum.removeAllListeners('accountsChanged');
-        (window as any).ethereum.removeAllListeners('chainChanged');
+      if (ethereum) {
+        ethereum.removeAllListeners('accountsChanged');
+        ethereum.removeAllListeners('chainChanged');
       }
     };
   }, [initBlockchain]);
@@ -121,9 +132,10 @@ export function useBlockchain() {
   };
 
   const reconnectWallet = async () => {
-    if (typeof window !== 'undefined' && (window as any).ethereum) {
+    const ethereum = (window as unknown as { ethereum?: MetaMaskEthereum }).ethereum;
+    if (typeof window !== 'undefined' && ethereum) {
       try {
-        await (window as any).ethereum.request({
+        await ethereum.request({
           method: "wallet_requestPermissions",
           params: [{ eth_accounts: {} }]
         });
@@ -143,11 +155,20 @@ export function useBlockchain() {
     setIsConnected(false);
   };
 
+  interface ContractTx {
+    id: bigint | number;
+    keterangan: string;
+    nominal: bigint | number;
+    isIncome: boolean;
+    timestamp: bigint | number;
+    addedBy: string;
+  }
+
   const getTransactions = async (): Promise<Transaction[]> => {
     if (!contract) return [];
     try {
       const txs = await contract.getTransactions();
-      return txs.map((tx: any) => {
+      return txs.map((tx: ContractTx) => {
         let formattedKeterangan = tx.keterangan;
         if (formattedKeterangan.includes("Semester 1")) {
           formattedKeterangan = formattedKeterangan.replace("Semester 1", "Periode Januari-Juni");
@@ -207,6 +228,7 @@ export function useBlockchain() {
     isLoading,
     connectWallet,
     reconnectWallet,
+    disconnectWallet,
     getTransactions,
     getBalance,
     addTransaction

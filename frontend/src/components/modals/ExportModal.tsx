@@ -50,7 +50,7 @@ export function ExportModal({ isOpen, onClose, transactions }: ExportModalProps)
 
   const parseDescription = (raw: string) => {
     const matchCat = raw.match(/^\[(.*?)\]\s*/);
-    let category = matchCat ? matchCat[1] : 'Umum';
+    const category = matchCat ? matchCat[1] : 'Umum';
     let desc = raw;
     if (matchCat) desc = raw.substring(matchCat[0].length);
     
@@ -98,7 +98,7 @@ export function ExportModal({ isOpen, onClose, transactions }: ExportModalProps)
       const debit = tx.isIncome ? tx.nominal : 0;
       const kredit = !tx.isIncome ? tx.nominal : 0;
       currentBalance += tx.isIncome ? tx.nominal : -tx.nominal;
-      
+
       const dateStr = format(tx.timestamp, 'dd/MM/yyyy HH:mm', { locale: idLocale });
       
       if (isIncomeOnly) {
@@ -111,7 +111,7 @@ export function ExportModal({ isOpen, onClose, transactions }: ExportModalProps)
     });
 
     let head = [['Tanggal', 'ID', 'Keterangan', 'Ref/Kategori', 'Pemasukan (Debit)', 'Pengeluaran (Kredit)', 'Saldo']];
-    let columnStyles: any = {
+    let columnStyles: Record<string | number, { halign?: 'left' | 'center' | 'right'; fontStyle?: 'normal' | 'bold' | 'italic' | 'bolditalic' }> = {
       4: { halign: 'right' },
       5: { halign: 'right' },
       6: { halign: 'right', fontStyle: 'bold' }
@@ -135,7 +135,7 @@ export function ExportModal({ isOpen, onClose, transactions }: ExportModalProps)
       styles: { fontSize: 9 }
     });
     
-    const finalY = (doc as any).lastAutoTable.finalY || 45;
+    const finalY = (doc as { lastAutoTable?: { finalY?: number } }).lastAutoTable?.finalY || 45;
     
     doc.setFontSize(10);
     if (isIncomeOnly) {
@@ -178,7 +178,7 @@ export function ExportModal({ isOpen, onClose, transactions }: ExportModalProps)
       const safeDesc = `"${desc.replace(/"/g, '""')}"`;
       const safeCat = `"${category}"`;
       
-      let values = [];
+      let values: (string | number)[];
       if (isIncomeOnly) {
         values = [tanggalStr, tx.id, safeDesc, safeCat, debit];
       } else if (isExpenseOnly) {

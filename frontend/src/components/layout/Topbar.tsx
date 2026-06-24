@@ -3,6 +3,7 @@ import { NavLink } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useWallet } from '../../features/blockchain/WalletContext';
 import { Button } from '../ui/Button';
+import { api } from '../../lib/axios';
 
 export function Topbar() {
   const { isConnected, connectWallet, reconnectWallet, disconnectWallet, isOwner } = useWallet();
@@ -10,12 +11,13 @@ export function Topbar() {
 
   useEffect(() => {
     // Initial fetch
-    fetch('/api/v1/profile')
-      .then(res => res.json())
-      .then(data => {
+    api.get('/profile')
+      .then(res => {
+        const data = res.data;
         if (data && data.logoUrl) setLogoUrl(data.logoUrl);
       })
       .catch(console.error);
+
 
     // Listen for updates from ProfilePage
     const handleUpdate = (e: Event) => {
