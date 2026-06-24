@@ -5,13 +5,20 @@ import { prisma } from './lib/prisma'
 const PORT = process.env.PORT || 3000
 
 async function main() {
-  await prisma.$connect()
+  // Start server immediately so it doesn't hang the deployment if DB is down
   app.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`)
   })
+
+  // Try connecting to DB in the background
+  try {
+    await prisma.$connect()
+    console.log('Successfully connected to the database')
+  } catch (err) {
+    console.error('Failed to connect to the database. Non-database routes will still work.', err)
+  }
 }
 
 main().catch((err) => {
-  console.error(err)
-  process.exit(1)
+  console.error('Critical server startup error:', err)
 })
