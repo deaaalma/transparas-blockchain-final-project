@@ -45,6 +45,8 @@ export default function ChatWidget({ systemPrompt, initialMessage }: ChatWidgetP
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState('');
   const [hasOpened, setHasOpened] = useState(false);
+  const [isTypingInitial, setIsTypingInitial] = useState(false);
+  const [showInitial, setShowInitial] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const { messages, loading, sendMessage, resetChat } = useChatGroq(systemPrompt);
@@ -58,8 +60,18 @@ export default function ChatWidget({ systemPrompt, initialMessage }: ChatWidgetP
   useEffect(() => {
     if (isOpen) {
       setTimeout(() => inputRef.current?.focus(), 300);
+      
+      // Animasi ngetik untuk pesan awal saat pertama buka
+      if (!hasOpened) {
+        setHasOpened(true);
+        setIsTypingInitial(true);
+        setTimeout(() => {
+          setIsTypingInitial(false);
+          setShowInitial(true);
+        }, 1500); // 1.5 detik pura-pura ngetik
+      }
     }
-  }, [isOpen]);
+  }, [isOpen, hasOpened]);
 
   const handleSend = () => {
     if (!input.trim() || loading) return;
@@ -114,8 +126,11 @@ export default function ChatWidget({ systemPrompt, initialMessage }: ChatWidgetP
 
         {/* Pesan */}
         <div className="cw-messages" role="log" aria-live="polite">
+          {/* Efek mengetik pesan awal */}
+          {isTypingInitial && <TypingDots />}
+
           {/* Pesan pembuka otomatis */}
-          {initialMessage && (
+          {showInitial && initialMessage && (
             <MessageBubble role="assistant" content={initialMessage} />
           )}
 
@@ -158,15 +173,7 @@ export default function ChatWidget({ systemPrompt, initialMessage }: ChatWidgetP
       {/* Toggle button */}
       <button
         className={`cw-toggle ${isOpen ? 'cw-toggle--active' : ''}`}
-        onClick={() => {
-          setIsOpen((v) => {
-            const next = !v;
-            if (next && !hasOpened) {
-              setHasOpened(true);
-            }
-            return next;
-          });
-        }}
+        onClick={() => setIsOpen(!isOpen)}
         aria-label={isOpen ? 'Tutup asisten AI' : 'Buka asisten AI'}
       >
         {/* Icon chat */}
