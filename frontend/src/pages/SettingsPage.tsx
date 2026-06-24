@@ -1,13 +1,12 @@
 import { useState, useEffect } from 'react';
-import { Shield, Lock, Bell, Globe, Database, Key } from 'lucide-react';
+import { Shield, Lock, Bell, Database, Key } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { useToast } from '../components/ui/ToastContext';
 
 export default function SettingsPage() {
-  const [activeTab, setActiveTab] = useState('umum');
+  const [activeTab, setActiveTab] = useState('keamanan');
 
   const tabs = [
-    { id: 'umum', label: 'Umum', icon: Globe },
     { id: 'keamanan', label: 'Keamanan & Akses', icon: Shield },
     { id: 'notifikasi', label: 'Notifikasi', icon: Bell },
     { id: 'blockchain', label: 'Koneksi Blockchain', icon: Database },
@@ -51,7 +50,6 @@ export default function SettingsPage() {
 
         {/* Content Area */}
         <div className="w-full max-w-4xl">
-          {activeTab === 'umum' && <GeneralSettings />}
           {activeTab === 'keamanan' && <SecuritySettings />}
           {activeTab === 'notifikasi' && <NotificationSettings />}
           {activeTab === 'blockchain' && <BlockchainSettings />}
@@ -62,48 +60,6 @@ export default function SettingsPage() {
 }
 
 // ─── Sub Components ─────────────────────────────────────────────────────────
-
-function GeneralSettings() {
-  const { addToast } = useToast();
-  const [lang, setLang] = useState(localStorage.getItem('app_lang') || 'id');
-  const [currency, setCurrency] = useState(localStorage.getItem('app_currency') || 'idr');
-
-  const handleSave = () => {
-    localStorage.setItem('app_lang', lang);
-    localStorage.setItem('app_currency', currency);
-    addToast('success', 'Preferensi Tampilan', 'Pengaturan berhasil disimpan!');
-  };
-
-  return (
-    <div className="flex flex-col gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="rounded-2xl border p-6" style={{ background: 'var(--color-bg-card)', borderColor: 'var(--color-border)' }}>
-        <h2 className="text-lg font-bold text-[var(--color-text-primary)] mb-6">Preferensi Tampilan</h2>
-        
-        <div className="space-y-6">
-          <div>
-            <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">Bahasa Aplikasi</label>
-            <select value={lang} onChange={(e) => setLang(e.target.value)} className="w-full md:w-1/2 h-12 px-4 rounded-xl border bg-[var(--color-bg-surface)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-brand-orange)] transition-colors" style={{ borderColor: 'var(--color-border-strong)' }}>
-              <option value="id">Bahasa Indonesia</option>
-              <option value="en">English (US)</option>
-            </select>
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">Format Mata Uang</label>
-            <select value={currency} onChange={(e) => setCurrency(e.target.value)} className="w-full md:w-1/2 h-12 px-4 rounded-xl border bg-[var(--color-bg-surface)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-brand-orange)] transition-colors" style={{ borderColor: 'var(--color-border-strong)' }}>
-              <option value="idr">Rupiah (Rp)</option>
-              <option value="usd">US Dollar ($)</option>
-            </select>
-          </div>
-        </div>
-
-        <div className="mt-8 pt-6 border-t" style={{ borderColor: 'var(--color-border)' }}>
-          <Button variant="primary" onClick={handleSave}>Simpan Perubahan</Button>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 function SecuritySettings() {
   const { addToast } = useToast();
