@@ -8,6 +8,7 @@ import TransactionDetailPage from '../pages/TransactionDetailPage'
 import ProfilePage from '../pages/ProfilePage'
 import AnalyticsPage from '../pages/AnalyticsPage'
 import VerificationPage from '../pages/VerificationPage'
+import SettingsPage from '../pages/SettingsPage'
 
 export function AppRoutes() {
   return (
@@ -20,7 +21,7 @@ export function AppRoutes() {
         <Route path="profil" element={<ProfilePage />} />
 
         <Route path="verifikasi" element={<VerificationPage />} />
-        <Route path="pengaturan" element={<div className="p-7">Halaman Pengaturan (Segera Hadir)</div>} />
+        <Route path="pengaturan" element={<SettingsPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
       <Route path="/login" element={<LoginPage />} />
