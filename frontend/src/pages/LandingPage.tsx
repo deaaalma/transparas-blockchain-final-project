@@ -2,11 +2,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Hexagon, ArrowRight, ShieldCheck, Lock, Activity, Eye, CheckCircle2, ChevronRight, PieChart, ClipboardList, Search } from 'lucide-react';
 
-const LogoMark = () => (
-  <div className="p-2 rounded-xl bg-[var(--color-brand-orange)]/10">
-    <Hexagon size={24} className="text-[var(--color-brand-orange)]" />
-  </div>
-);
+
 
 const SectionEyebrow = ({ label, tag }: { label: string; tag?: string }) => (
   <div className="flex items-center gap-3">
@@ -55,8 +51,8 @@ export default function LandingPage() {
           className="max-w-7xl mx-auto px-6 py-6 flex items-center justify-between"
         >
           <div className="flex items-center gap-3">
-            <LogoMark />
-            <span className="text-xl font-bold tracking-tight text-white">Trans<span className="text-[var(--color-brand-orange)]">Paras</span></span>
+            <img src="/logo.png" alt="TransParas Logo" className="w-10 h-10 rounded-xl object-cover shadow-lg shadow-[var(--color-brand-orange)]/10" />
+            <span className="text-2xl font-bold tracking-tight text-white">Trans<span className="text-[var(--color-brand-orange)]">Paras</span></span>
           </div>
 
           <div className="hidden md:flex gap-8">
