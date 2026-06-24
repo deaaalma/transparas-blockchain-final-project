@@ -1,5 +1,8 @@
 import { Router, Request, Response } from 'express'
 
+import dns from 'node:dns'
+dns.setDefaultResultOrder('ipv4first')
+
 const router = Router()
 
 // POST /api/chat
@@ -10,6 +13,9 @@ router.post('/', async (req: Request, res: Response) => {
   if (!messages || !Array.isArray(messages)) {
     return res.status(400).json({ error: 'messages array required' })
   }
+
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), 20000) // 20 seconds timeout
 
   try {
     const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
@@ -25,7 +31,10 @@ router.post('/', async (req: Request, res: Response) => {
         temperature: 0.6,
         stream: false,
       }),
+      signal: controller.signal,
     })
+    
+    clearTimeout(timeoutId)
 
     if (!response.ok) {
       const err = await response.json()
@@ -36,9 +45,13 @@ router.post('/', async (req: Request, res: Response) => {
     const reply = data.choices[0].message.content
     res.json({ reply })
 
-  } catch (error) {
+  } catch (error: any) {
+    clearTimeout(timeoutId)
     console.error('Groq error:', error)
-    res.status(500).json({ error: 'Internal server error' })
+    if (error.name === 'AbortError') {
+      return res.status(504).json({ error: 'Groq API timeout' })
+    }
+    res.status(500).json({ error: 'Internal server error', details: error.message })
   }
 })
 
