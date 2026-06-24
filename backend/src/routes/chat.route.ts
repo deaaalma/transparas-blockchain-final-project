@@ -1,7 +1,11 @@
 import { Router, Request, Response } from 'express'
 
 import dns from 'dns'
-dns.setDefaultResultOrder('ipv4first')
+try {
+  dns.setDefaultResultOrder('ipv4first')
+} catch (e) {
+  console.warn('dns.setDefaultResultOrder not supported')
+}
 
 const router = Router()
 
