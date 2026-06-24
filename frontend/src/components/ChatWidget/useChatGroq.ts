@@ -27,7 +27,7 @@ export function useChatGroq(systemPrompt: string) {
     setError(null);
 
     try {
-      const { api } = await import('../../../lib/axios');
+      const { api } = await import('../../lib/axios');
       const res = await api.post('/chat', { messages: payload });
 
       const data = res.data;
