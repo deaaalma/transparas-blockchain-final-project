@@ -181,15 +181,21 @@ Laporan yang sedang dilihat pengguna:
 - Saldo Akhir: ${idr(totalIncome - totalExpense)}
 - Kategori pengeluaran terbesar: ${maxExpenseCategory} (${idr(maxExpenseValue)})
 
+Data Bulanan (6 Bulan Terakhir):
+${barChartData.map(d => `- ${d.name} ${d.year}: Pemasukan ${idr(d.Pemasukan)}, Pengeluaran ${idr(d.Pengeluaran)}`).join('\n')}
+
+5 Transaksi Terakhir:
+${parsedTxs.slice(0, 5).map(t => `- ${format(t.timestamp, 'dd MMM yyyy')}: ${t.isIncome ? 'Masuk' : 'Keluar'} ${idr(t.nominal)} (${t.category})`).join('\n')}
+
 Aturan:
 1. Jelaskan kondisi keuangan dengan bahasa yang mudah dipahami anggota banjar/sekaa.
 2. Sorot kategori pengeluaran signifikan dan berikan insight singkat.
-3. Jawab pertanyaan hanya berdasarkan data di atas — jangan mengarang angka.
+3. Jawab pertanyaan hanya berdasarkan data di atas — jangan mengarang angka. Jika data tidak ada, sampaikan tidak ada.
 4. Gunakan bahasa Indonesia yang ramah dan lugas.
 5. Jawaban ringkas, maksimal 4 kalimat kecuali diminta detail.
   `.trim();
 
-  const initialMessage = `Halo! Aku adalah asisten AI TransParas. Berdasarkan data saat ini, total pemasukan adalah **${idr(totalIncome)}** dan pengeluaran terbesar ada di **${maxExpenseCategory}** (${idr(maxExpenseValue)}). Ada yang ingin kamu tanyakan tentang data keuangan ini?`;
+  const initialMessage = `Halo! Aku adalah asisten AI TransParas. Berdasarkan data saat ini, total pemasukan adalah **${idr(totalIncome)}** dan pengeluaran terbesar ada di **${maxExpenseCategory}** (${idr(maxExpenseValue)}). Ada yang ingin kamu tanyakan tentang laporan ini? (Misal: "Bulan apa pengeluaran paling hemat?")`;
 
   return (
     <div className="flex flex-col h-full overflow-y-auto px-7 py-8 custom-scrollbar">
