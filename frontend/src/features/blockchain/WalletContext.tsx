@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, type ReactNode } from 'react';
 import { useBlockchain } from '../../hooks/useBlockchain';
 import type { Transaction, Balance } from '../../hooks/useBlockchain';
@@ -16,7 +17,7 @@ interface WalletContextType {
   disconnectWallet: () => void;
   getTransactions: () => Promise<Transaction[]>;
   getBalance: () => Promise<Balance>;
-  addTransaction: (keterangan: string, nominal: number, isIncome: boolean) => Promise<any>;
+  addTransaction: (keterangan: string, nominal: number, isIncome: boolean) => Promise<unknown>;
 }
 
 const WalletContext = createContext<WalletContextType | undefined>(undefined);

@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useWallet } from '../../features/blockchain/WalletContext';
 import { useToast } from '../ui/ToastContext';
 import { uploadToIPFS } from '../../utils/ipfs';
 import { format } from 'date-fns';
-import { X, UploadCloud, Lock, Send, AlertTriangle, CheckCircle2, Loader2, FileText } from 'lucide-react';
+import { X, UploadCloud, Lock, AlertTriangle, Loader2, FileText } from 'lucide-react';
 
 const INCOME_CATEGORIES = ['Dana Punia', 'Iuran Anggota', 'Donasi', 'Lainnya'];
 const EXPENSE_CATEGORIES = ['Keagamaan', 'Sosial', 'Operasional', 'Konsumsi', 'Infrastruktur', 'Dana Darurat', 'Lainnya'];
@@ -13,7 +13,7 @@ interface AddTransactionModalProps {
 }
 
 export function AddTransactionModal({ onClose }: AddTransactionModalProps) {
-  const { isConnected, isOwner, addTransaction } = useWallet();
+  const { isOwner, addTransaction } = useWallet();
   const { toast } = useToast();
   
   const [isIncome, setIsIncome] = useState(true);
@@ -25,11 +25,6 @@ export function AddTransactionModal({ onClose }: AddTransactionModalProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [statusText, setStatusText] = useState('Menunggu Konfirmasi');
   const [error, setError] = useState('');
-
-  // Update default category when type changes
-  useEffect(() => {
-    setKategori(isIncome ? INCOME_CATEGORIES[0] : EXPENSE_CATEGORIES[0]);
-  }, [isIncome]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -74,9 +69,10 @@ export function AddTransactionModal({ onClose }: AddTransactionModalProps) {
       setStatusText('Transaksi Berhasil!');
       toast('Transaksi berhasil dicatat di blockchain', 'success');
       onClose();
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      setError(err.reason || err.message || 'Gagal menambahkan transaksi. Pastikan saldo mencukupi.');
+      const errorWithReason = err as { reason?: string; message?: string };
+      setError(errorWithReason.reason || errorWithReason.message || 'Gagal menambahkan transaksi. Pastikan saldo mencukupi.');
       setStatusText('Menunggu Konfirmasi');
     } finally {
       setIsLoading(false);
@@ -151,9 +147,12 @@ export function AddTransactionModal({ onClose }: AddTransactionModalProps) {
                   <div>
                     <label className="block text-[11px] font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-2">Jenis Transaksi</label>
                     <div className="flex rounded-xl border border-[var(--color-border)] p-1 bg-[var(--color-bg-input)]">
-                      <button
+                       <button
                         type="button"
-                        onClick={() => setIsIncome(true)}
+                        onClick={() => {
+                          setIsIncome(true);
+                          setKategori(INCOME_CATEGORIES[0]);
+                        }}
                         className={`flex-1 py-2 text-sm font-semibold rounded-lg transition-colors ${
                           isIncome 
                             ? 'bg-[var(--color-bg-card)] text-[var(--color-income)] shadow-sm border border-[var(--color-border-strong)]' 
@@ -164,7 +163,10 @@ export function AddTransactionModal({ onClose }: AddTransactionModalProps) {
                       </button>
                       <button
                         type="button"
-                        onClick={() => setIsIncome(false)}
+                        onClick={() => {
+                          setIsIncome(false);
+                          setKategori(EXPENSE_CATEGORIES[0]);
+                        }}
                         className={`flex-1 py-2 text-sm font-semibold rounded-lg transition-colors ${
                           !isIncome 
                             ? 'bg-[var(--color-bg-card)] text-[var(--color-expense)] shadow-sm border border-[var(--color-border-strong)]' 

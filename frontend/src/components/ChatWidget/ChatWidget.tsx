@@ -58,7 +58,6 @@ export default function ChatWidget({ systemPrompt, initialMessage }: ChatWidgetP
   useEffect(() => {
     if (isOpen) {
       setTimeout(() => inputRef.current?.focus(), 300);
-      if (!hasOpened) setHasOpened(true);
     }
   }, [isOpen]);
 
@@ -159,7 +158,15 @@ export default function ChatWidget({ systemPrompt, initialMessage }: ChatWidgetP
       {/* Toggle button */}
       <button
         className={`cw-toggle ${isOpen ? 'cw-toggle--active' : ''}`}
-        onClick={() => setIsOpen((v) => !v)}
+        onClick={() => {
+          setIsOpen((v) => {
+            const next = !v;
+            if (next && !hasOpened) {
+              setHasOpened(true);
+            }
+            return next;
+          });
+        }}
         aria-label={isOpen ? 'Tutup asisten AI' : 'Buka asisten AI'}
       >
         {/* Icon chat */}

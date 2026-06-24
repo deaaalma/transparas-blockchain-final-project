@@ -1,12 +1,12 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { useWallet } from '../features/blockchain/WalletContext';
 import type { Transaction } from '../hooks/useBlockchain';
 import { QRCodeSVG } from 'qrcode.react';
 import { format } from 'date-fns';
 import { id as idLocale } from 'date-fns/locale';
 import { 
-  Search, ShieldCheck, Printer, ExternalLink, 
-  AlertCircle, CheckCircle2, Copy, FileText, Fingerprint
+  Search, Printer, ExternalLink, 
+  AlertCircle, Fingerprint
 } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 
@@ -15,7 +15,7 @@ const idr = (n: number) => 'Rp ' + new Intl.NumberFormat('id-ID', { maximumFract
 const formatDateTime = (d: Date) => format(d, "dd MMMM yyyy, HH:mm:ss 'WIB'", { locale: idLocale });
 
 export default function VerificationPage() {
-  const { getTransactions, isConnected } = useWallet();
+  const { getTransactions } = useWallet();
   const [searchId, setSearchId] = useState('');
   const [isSearching, setIsSearching] = useState(false);
   const [result, setResult] = useState<Transaction | null>(null);
@@ -23,8 +23,6 @@ export default function VerificationPage() {
   
   // Fake progress steps for the "Hacking/Searching" effect
   const [searchStep, setSearchStep] = useState(0);
-
-  const printRef = useRef<HTMLDivElement>(null);
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();

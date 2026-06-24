@@ -36,13 +36,25 @@ const parseDescription = (raw: string) => {
   return { category: 'Lainnya', description: raw };
 };
 
+interface TooltipPayloadItem {
+  name: string;
+  value: number;
+  color?: string;
+}
+
+interface CustomTooltipProps {
+  active?: boolean;
+  payload?: TooltipPayloadItem[];
+  label?: string;
+}
+
 // ─── custom tooltip ───────────────────────────────────────────────────────────
-function CustomTooltip({ active, payload, label }: any) {
+function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
   if (!active || !payload?.length) return null;
   return (
     <div className="rounded-xl border border-[var(--color-border-strong)] bg-[var(--color-bg-surface)] p-3 text-xs shadow-xl">
       <p className="text-[var(--color-text-secondary)] mb-1 font-medium">{label}</p>
-      {payload.map((p: any) => (
+      {payload.map((p) => (
         <p key={p.name} style={{ color: p.color }} className="font-bold">
           {p.name}: {idr(p.value)}
         </p>
@@ -221,7 +233,7 @@ Aturan:
           {/* Bar Chart Section */}
           <div className="rounded-2xl border p-6 flex flex-col min-h-[350px]" style={{ background: 'var(--color-bg-card)', borderColor: 'var(--color-border)' }}>
             <h2 className="text-lg text-[var(--color-text-primary)] mb-6" style={{ fontWeight: 'var(--fw-bold)' }}>Perbandingan Pemasukan & Pengeluaran</h2>
-            <div className="flex-1 min-h-[250px]">
+            <div className="flex-1 min-h-[250px]" style={{ minWidth: 0 }}>
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={barChartData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--color-border-strong)" />
@@ -245,7 +257,7 @@ Aturan:
               {incomeData.length === 0 ? (
                 <p className="text-center text-sm text-[var(--color-text-muted)] italic py-10">Belum ada pemasukan</p>
               ) : (
-                <div className="relative flex items-center justify-center h-[250px]">
+                <div className="relative flex items-center justify-center h-[250px] w-full" style={{ minWidth: 0 }}>
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
                       <Pie data={incomeData} cx="50%" cy="50%" innerRadius={70} outerRadius={100} startAngle={90} endAngle={-270} dataKey="value" stroke="none">
@@ -273,7 +285,7 @@ Aturan:
               {expenseData.length === 0 ? (
                 <p className="text-center text-sm text-[var(--color-text-muted)] italic py-10">Belum ada pengeluaran</p>
               ) : (
-                <div className="relative flex items-center justify-center h-[250px]">
+                <div className="relative flex items-center justify-center h-[250px] w-full" style={{ minWidth: 0 }}>
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
                       <Pie data={expenseData} cx="50%" cy="50%" innerRadius={70} outerRadius={100} startAngle={90} endAngle={-270} dataKey="value" stroke="none">

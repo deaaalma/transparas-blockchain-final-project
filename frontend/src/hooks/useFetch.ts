@@ -13,6 +13,7 @@ export function useFetch<T>(fetcher: () => Promise<T>, deps: unknown[] = []) {
 
   useEffect(() => {
     let cancelled = false
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setState(s => ({ ...s, isLoading: true, error: null }))
     fetcher()
       .then(data => { if (!cancelled) setState({ data, isLoading: false, error: null }) })

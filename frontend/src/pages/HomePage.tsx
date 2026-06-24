@@ -10,8 +10,7 @@ import {
   PieChart, Pie, Cell,
 } from 'recharts';
 import {
-  LayoutDashboard, ClipboardList, TrendingUp, Shield, Settings,
-  LogOut, Bell, Plus, ArrowUp, ArrowDown, Building2, UserCircle2,
+  ArrowUp, ArrowDown, Building2,
   CalendarDays, CheckCircle2, Clock, AlertCircle, RefreshCw
 } from 'lucide-react';
 
@@ -91,12 +90,24 @@ function StatCard({
 
 // ─── tooltip for chart ────────────────────────────────────────────────────────
 
-function CustomTooltip({ active, payload, label }: any) {
+interface TooltipPayloadItem {
+  name: string;
+  value: number;
+  color?: string;
+}
+
+interface CustomTooltipProps {
+  active?: boolean;
+  payload?: TooltipPayloadItem[];
+  label?: string;
+}
+
+function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
   if (!active || !payload?.length) return null;
   return (
     <div className="rounded-xl border border-[var(--color-border-strong)] bg-[var(--color-bg-surface)] p-3 text-xs shadow-xl">
       <p className="text-[var(--color-text-secondary)] mb-1 font-medium">{label}</p>
-      {payload.map((p: any) => (
+      {payload.map((p) => (
         <p key={p.name} style={{ color: p.color }} className="font-bold">
           {p.name}: {idr(p.value)}
         </p>
@@ -119,7 +130,13 @@ const COLORS: Record<string, string> = {
   'Donasi':        '#60a5fa', // Blue
 };
 
-function AllocDonut({ transactions, isIncome = false, onFlip }: { transactions: any[], isIncome?: boolean, onFlip: () => void }) {
+interface ParsedTransaction extends Transaction {
+  category: string;
+  desc: string;
+  ipfsUrl: string | null;
+}
+
+function AllocDonut({ transactions, isIncome = false, onFlip }: { transactions: ParsedTransaction[], isIncome?: boolean, onFlip: () => void }) {
   // Calculate total
   const total = transactions.reduce((sum, tx) => sum + tx.nominal, 0);
 
@@ -171,7 +188,7 @@ function AllocDonut({ transactions, isIncome = false, onFlip }: { transactions: 
       </div>
 
       <div className="flex flex-col gap-4 flex-1">
-      <div className="relative flex items-center justify-center shrink-0" style={{ height: 160 }}>
+      <div className="relative flex items-center justify-center shrink-0 w-full" style={{ height: 160, minWidth: 0 }}>
         <ResponsiveContainer width="100%" height={160}>
           <PieChart>
             <Pie
@@ -237,7 +254,6 @@ function StatusBadge({ status }: { status: 'Verified' | 'Pending' | 'Rejected' }
 
 export default function HomePage() {
   const {
-    isConnected, connectWallet,
     getTransactions, getBalance,
     addTransaction, isOwner,
   } = useWallet();
@@ -263,6 +279,7 @@ export default function HomePage() {
   }, [getTransactions, getBalance]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchData();
     const id = setInterval(fetchData, 15000);
     return () => clearInterval(id);
@@ -297,8 +314,9 @@ export default function HomePage() {
       setKeterangan(''); setNominal('');
       setShowAddModal(false);
       await fetchData();
-    } catch (err: any) {
-      setFormError(err.reason || err.message || 'Transaksi gagal.');
+    } catch (err: unknown) {
+      const errorWithReason = err as { reason?: string; message?: string };
+      setFormError(errorWithReason.reason || errorWithReason.message || 'Transaksi gagal.');
     } finally {
       setIsSubmitting(false);
     }
@@ -408,7 +426,7 @@ export default function HomePage() {
                 </div>
               </div>
 
-              <div className="flex-1 min-h-[192px]" aria-label="Grafik arus kas dana 6 bulan terakhir">
+              <div className="flex-1 min-h-[192px]" style={{ minWidth: 0 }} aria-label="Grafik arus kas dana 6 bulan terakhir">
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={chartData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
                     <defs>

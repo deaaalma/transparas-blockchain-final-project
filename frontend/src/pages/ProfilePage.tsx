@@ -3,11 +3,12 @@ import { useWallet } from '../features/blockchain/WalletContext';
 import { Button } from '../components/ui/Button';
 import { useToast } from '../components/ui/ToastContext';
 import { 
-  ShieldCheck, Edit3, Save, X, Copy, Camera, LogOut
+  Edit3, Save, X, Copy, Camera, LogOut
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../features/auth';
 import { authApi } from '../features/auth/api/authApi';
+import { api } from '../lib/axios';
 
 interface BanjarProfile {
   name: string;
@@ -54,28 +55,26 @@ export default function ProfilePage() {
     document.title = 'Profil Organisasi | TransParas';
     const fetchProfile = async () => {
       try {
-        const response = await fetch('/api/v1/profile');
-        if (response.ok) {
-          const data = await response.json();
-          setProfile(data);
-          
-          // Restore draft if exists
-          const draftStr = localStorage.getItem('profileDraft');
-          if (draftStr) {
-            try {
-              const draft = JSON.parse(draftStr);
-              if (draft.isEditing) {
-                setEditForm(draft.editForm);
-                setIsEditing(true);
-              } else {
-                setEditForm(data);
-              }
-            } catch (e) {
+        const response = await api.get('/profile');
+        const data = response.data;
+        setProfile(data);
+        
+        // Restore draft if exists
+        const draftStr = localStorage.getItem('profileDraft');
+        if (draftStr) {
+          try {
+            const draft = JSON.parse(draftStr);
+            if (draft.isEditing) {
+              setEditForm(draft.editForm);
+              setIsEditing(true);
+            } else {
               setEditForm(data);
             }
-          } else {
+          } catch {
             setEditForm(data);
           }
+        } else {
+          setEditForm(data);
         }
       } catch (error) {
         console.error("Gagal load profile dari backend:", error);
@@ -149,22 +148,13 @@ export default function ProfilePage() {
         formData.append('logo', selectedFile);
       }
 
-      const response = await fetch('/api/v1/profile', {
-        method: 'PUT',
-        body: formData, // fetch will automatically set Content-Type to multipart/form-data with boundary
+      const response = await api.put('/profile', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       });
 
-      if (!response.ok) {
-        let errorMessage = 'Gagal menyimpan profil';
-        try {
-          const errData = await response.json();
-          if (errData.details) errorMessage += `: ${errData.details}`;
-          else if (errData.error) errorMessage += `: ${errData.error}`;
-        } catch(e) {}
-        throw new Error(errorMessage);
-      }
-
-      const result = await response.json();
+      const result = response.data;
       setProfile(result.data);
       setEditForm(result.data);
       
@@ -176,9 +166,10 @@ export default function ProfilePage() {
       setPreviewUrl(null);
       if (fileInputRef.current) fileInputRef.current.value = '';
       toast('Profil organisasi berhasil diperbarui!', 'success');
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error(error);
-      toast(error.message || 'Terjadi kesalahan saat menyimpan profil', 'error');
+      const err = error as Error;
+      toast(err.message || 'Terjadi kesalahan saat menyimpan profil', 'error');
     } finally {
       setIsSaving(false);
     }

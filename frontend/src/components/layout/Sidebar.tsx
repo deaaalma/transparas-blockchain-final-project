@@ -1,5 +1,5 @@
 import {
-  LayoutDashboard, ClipboardList, TrendingUp, Shield, Settings, LogOut, Plus, PieChart
+  LayoutDashboard, ClipboardList, Shield, Settings, LogOut, PieChart
 } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 
