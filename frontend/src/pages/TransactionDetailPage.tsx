@@ -52,14 +52,7 @@ export default function TransactionDetailPage() {
     toast(`${label} berhasil disalin`, 'success');
   };
 
-  if (!isConnected) {
-    return (
-      <div className="max-w-5xl mx-auto w-full pt-10 px-4 md:px-8">
-        <EmptyState icon={<FileText size={24} />} title="Dompet Belum Terhubung"
-          description="Silakan hubungkan dompet digital Anda (MetaMask) untuk melihat detail transaksi." />
-      </div>
-    );
-  }
+
 
   if (isLoading) {
     return (
@@ -86,7 +79,7 @@ export default function TransactionDetailPage() {
         <EmptyState icon={<FileText size={24} />} title="Transaksi Tidak Ditemukan"
           description={`Transaksi dengan ID #${id} tidak ditemukan di dalam jaringan blockchain.`}
           action={
-            <Button variant="outline" onClick={() => navigate('/transaksi')} className="mt-4 rounded-xl">
+            <Button variant="outline" onClick={() => navigate('/dashboard/transaksi')} className="mt-4 rounded-xl">
               Kembali ke Riwayat
             </Button>
           } />

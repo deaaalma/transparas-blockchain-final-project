@@ -27,7 +27,7 @@ export function Layout() {
       </div>
 
       {/* ── Global Floating Action Button ──────────────────────────── */}
-      {isOwner && (
+      {isOwner && !!localStorage.getItem('token') && (
         <button 
           onClick={() => setIsAddModalOpen(true)}
           className="absolute bottom-8 right-8 w-14 h-14 rounded-full bg-[var(--color-brand-orange)] hover:bg-[var(--color-brand-orange-hover)] shadow-lg border border-white/10 flex items-center justify-center text-white hover:scale-105 active:scale-95 transition-all duration-300 z-50 group"

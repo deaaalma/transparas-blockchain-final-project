@@ -37,7 +37,9 @@ export default function LoginPage() {
           <div className="relative z-10">
             <Link to="/" className="flex items-center gap-3 mb-12 hover:opacity-80 transition-opacity">
               <img src="/logo.png" alt="TransParas Logo" className="w-10 h-10 rounded-xl object-cover shadow-lg shadow-[var(--color-brand-orange)]/10" />
-              <span className="text-2xl font-bold tracking-tight text-white">Trans<span className="text-[var(--color-brand-orange)]">Paras</span></span>
+              <span className="text-xl text-[var(--color-text-primary)]" style={{ fontWeight: 800, letterSpacing: '0.14em' }}>
+                TRANSPARAS
+              </span>
             </Link>
             
             <h1 className="text-4xl font-bold leading-tight text-white mb-6">
@@ -65,7 +67,9 @@ export default function LoginPage() {
           <div className="mb-8 md:hidden flex items-center gap-3">
             <Link to="/">
               <img src="/logo.png" alt="TransParas Logo" className="w-8 h-8 rounded-lg object-cover inline-block" />
-              <span className="text-xl font-bold tracking-tight text-white ml-2">Trans<span className="text-[var(--color-brand-orange)]">Paras</span></span>
+              <span className="text-lg text-[var(--color-text-primary)] uppercase ml-2" style={{ fontWeight: 'var(--fw-bold)', letterSpacing: '0.14em' }}>
+                TransParas
+              </span>
             </Link>
           </div>
 

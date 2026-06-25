@@ -4,13 +4,14 @@ import {
 import { NavLink, useNavigate } from 'react-router-dom';
 
 function NavItem({
-  icon, label, to, badge,
+  icon, label, to, badge, end,
 }: {
-  icon: React.ReactNode; label: string; to: string; badge?: number;
+  icon: React.ReactNode; label: string; to: string; badge?: number; end?: boolean;
 }) {
   return (
     <NavLink
       to={to}
+      end={end}
       title={label}
       aria-label={label}
       className={({ isActive }) =>
@@ -35,10 +36,15 @@ function NavItem({
 
 export function Sidebar() {
   const navigate = useNavigate();
+  const isAdmin = !!localStorage.getItem('token');
 
   const handleLogout = () => {
     localStorage.removeItem('token');
     navigate('/');
+  };
+
+  const handleLogin = () => {
+    navigate('/login');
   };
 
   return (
@@ -49,7 +55,7 @@ export function Sidebar() {
     >
       {/* Logo */}
       <NavLink 
-        to="/admin"
+        to="/dashboard"
         end
         className="flex items-center justify-start mb-6 w-full h-10 px-1 overflow-hidden shrink-0 cursor-pointer rounded-xl transition-colors hover:bg-[var(--color-bg-card-hover)]"
         title="Dashboard Utama"
@@ -59,28 +65,35 @@ export function Sidebar() {
           alt="TransParas Logo"
           className="w-9 h-9 rounded-xl shrink-0 object-cover"
         />
-        <span className="ml-3 text-lg font-bold tracking-tight text-[var(--color-text-primary)] opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
-          Trans<span className="text-[var(--color-brand-orange)]">Paras</span>
+        <span 
+          className="ml-3 text-[13px] text-[var(--color-text-primary)] opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap"
+          style={{ fontWeight: 800, letterSpacing: '0.14em' }}
+        >
+          TRANSPARAS
         </span>
       </NavLink>
 
       <nav className="flex flex-col gap-1 w-full" aria-label="Menu">
-        <NavItem icon={<LayoutDashboard size={20} />} label="Dashboard" to="/admin" />
-        <NavItem icon={<PieChart size={20} />} label="Analytics" to="/admin/analytics" />
-        <NavItem icon={<ClipboardList size={20} />} label="Transaksi" to="/admin/transaksi" />
-        <NavItem icon={<Shield size={20} />} label="Verifikasi" to="/admin/verifikasi" />
+        <NavItem icon={<LayoutDashboard size={20} />} label="Dashboard" to="/dashboard" end />
+        <NavItem icon={<PieChart size={20} />} label="Analytics" to="/dashboard/analytics" />
+        <NavItem icon={<ClipboardList size={20} />} label="Transaksi" to="/dashboard/transaksi" />
+        <NavItem icon={<Shield size={20} />} label="Verifikasi" to="/dashboard/verifikasi" />
       </nav>
 
       <div className="flex flex-col gap-1 mt-auto w-full">
-        <NavItem icon={<Settings size={20} />} label="Pengaturan" to="/admin/pengaturan" />
+        {isAdmin && (
+          <NavItem icon={<Settings size={20} />} label="Pengaturan" to="/dashboard/pengaturan" />
+        )}
         <button
-          onClick={handleLogout}
+          onClick={isAdmin ? handleLogout : handleLogin}
           className="relative flex items-center justify-start w-11 group-hover:w-full h-11 rounded-xl transition-all duration-300 cursor-pointer overflow-hidden px-3 shrink-0 text-[var(--color-text-muted)] hover:bg-[var(--color-bg-card-hover)] hover:text-[var(--color-text-secondary)]"
-          title="Keluar"
+          title={isAdmin ? "Keluar" : "Masuk Pengelola"}
         >
-          <div className="shrink-0 flex items-center justify-center w-5 h-5"><LogOut size={20} /></div>
+          <div className="shrink-0 flex items-center justify-center w-5 h-5">
+            {isAdmin ? <LogOut size={20} /> : <Shield size={20} />}
+          </div>
           <span className="ml-3 whitespace-nowrap text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            Keluar
+            {isAdmin ? "Keluar" : "Masuk Pengelola"}
           </span>
         </button>
       </div>

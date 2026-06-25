@@ -260,15 +260,7 @@ export default function HomePage() {
 
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [balance, setBalance] = useState<Balance>({ income: 0, expense: 0, balance: 0 });
-  const [showAddModal, setShowAddModal] = useState(false);
   const [isChartFlipped, setIsChartFlipped] = useState(false);
-
-  // form state
-  const [keterangan, setKeterangan] = useState('');
-  const [nominal, setNominal] = useState('');
-  const [isIncome, setIsIncome] = useState(true);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formError, setFormError] = useState('');
 
   const fetchData = useCallback(async () => {
     try {
@@ -301,26 +293,6 @@ export default function HomePage() {
       Pengeluaran: monthTxs.filter(t => !t.isIncome).reduce((s, t) => s + t.nominal, 0),
     };
   });
-
-  const handleAdd = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setFormError('');
-    const n = Number(nominal);
-    if (!keterangan.trim()) { setFormError('Keterangan tidak boleh kosong.'); return; }
-    if (!n || n <= 0) { setFormError('Nominal harus lebih dari 0.'); return; }
-    setIsSubmitting(true);
-    try {
-      await addTransaction(keterangan, n, isIncome);
-      setKeterangan(''); setNominal('');
-      setShowAddModal(false);
-      await fetchData();
-    } catch (err: unknown) {
-      const errorWithReason = err as { reason?: string; message?: string };
-      setFormError(errorWithReason.reason || errorWithReason.message || 'Transaksi gagal.');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
 
   // extract category, pure description, and ipfs link
   const parseDescription = (raw: string) => {
@@ -509,7 +481,7 @@ export default function HomePage() {
             <div className="flex items-center justify-between px-5 py-4 border-b" style={{ borderColor: 'var(--color-border)' }}>
               <h2 className="text-lg text-[var(--color-text-primary)]" style={{ fontWeight: 'var(--fw-bold)' }}>Transaksi Terbaru</h2>
               <Link
-                to="/transaksi"
+                to="/dashboard/transaksi"
                 className="text-xs transition-colors hover:underline cursor-pointer"
                 style={{ color: 'var(--color-brand-orange)', fontWeight: 'var(--fw-semibold)' }}
               >
@@ -624,158 +596,6 @@ export default function HomePage() {
           </div>
         {/* Content wrapper removed to use global Layout */}
 
-      {/* ── FAB – Tambah Transaksi (Bendahara only) ─────────────────── */}
-      {isOwner && (
-        <>
-
-          {/* Add Transaction Modal */}
-          {showAddModal && (
-            <div
-              className="fixed inset-0 z-50 flex items-center justify-center p-4"
-              style={{ background: 'rgba(0,0,0,0.65)' }}
-              role="dialog"
-              aria-modal="true"
-              aria-labelledby="modal-title"
-              onClick={e => { if (e.target === e.currentTarget) setShowAddModal(false); }}
-            >
-              <div
-                className="w-full max-w-md rounded-2xl border p-6 shadow-2xl"
-                style={{
-                  background: 'var(--color-bg-card)',
-                  borderColor: 'var(--color-border-strong)',
-                }}
-              >
-                {/* Modal header */}
-                <div
-                  className="rounded-xl p-4 mb-5"
-                  style={{ background: 'var(--color-bg-surface)', border: '1px solid var(--color-border)' }}
-                >
-                  <h2 id="modal-title" className="text-base text-[var(--color-text-primary)]" style={{ fontWeight: 'var(--fw-bold)' }}>
-                    Catat Transaksi Baru
-                  </h2>
-                  <p className="text-xs mt-0.5" style={{ color: 'var(--color-text-secondary)' }}>
-                    Data akan dicatat permanen di blockchain · MetaMask diperlukan
-                  </p>
-                </div>
-
-                <form onSubmit={handleAdd} className="space-y-4" noValidate>
-                  {/* Type toggle */}
-                  <fieldset>
-                    <legend className="text-xs uppercase tracking-wider mb-2" style={{ color: 'var(--color-text-muted)', fontWeight: 'var(--fw-medium)', letterSpacing: '0.08em' }}>
-                      Jenis Transaksi
-                    </legend>
-                    <div className="grid grid-cols-2 gap-2">
-                      {[
-                        { label: 'Pemasukan', value: true,  color: 'var(--color-income)',   dim: 'var(--color-income-dim)'  },
-                        { label: 'Pengeluaran', value: false, color: 'var(--color-expense)', dim: 'var(--color-expense-dim)' },
-                      ].map(opt => (
-                        <button
-                          key={opt.label}
-                          type="button"
-                          onClick={() => setIsIncome(opt.value)}
-                          className="py-2.5 rounded-xl text-sm transition-all cursor-pointer border"
-                          style={{
-                            background: isIncome === opt.value ? opt.dim : 'var(--color-bg-card-hover)',
-                            color:      isIncome === opt.value ? opt.color : 'var(--color-text-secondary)',
-                            borderColor: isIncome === opt.value ? opt.color : 'var(--color-border)',
-                            fontWeight: 'var(--fw-semibold)',
-                          }}
-                          aria-pressed={isIncome === opt.value}
-                        >
-                          {opt.label}
-                        </button>
-                      ))}
-                    </div>
-                  </fieldset>
-
-                  {/* Nominal */}
-                  <div>
-                    <label
-                      htmlFor="modal-nominal"
-                      className="block text-xs uppercase mb-1.5"
-                      style={{ color: 'var(--color-text-muted)', fontWeight: 'var(--fw-medium)', letterSpacing: '0.08em' }}
-                    >
-                      Nominal (IDR)
-                    </label>
-                    <div
-                      className="flex items-center rounded-xl border px-4 py-3 gap-2 transition-colors"
-                      style={{
-                        background: 'var(--color-bg-input)',
-                        borderColor: 'var(--color-border-strong)',
-                      }}
-                    >
-                      <span className="text-sm shrink-0" style={{ color: 'var(--color-text-muted)', fontWeight: 'var(--fw-medium)' }}>Rp</span>
-                      <input
-                        id="modal-nominal"
-                        type="number"
-                        min="1"
-                        value={nominal}
-                        onChange={e => setNominal(e.target.value)}
-                        placeholder="500000"
-                        className="flex-1 bg-transparent text-sm outline-none"
-                        style={{ color: 'var(--color-text-primary)', fontWeight: 'var(--fw-semibold)' }}
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  {/* Keterangan */}
-                  <div>
-                    <label
-                      htmlFor="modal-keterangan"
-                      className="block text-xs uppercase mb-1.5"
-                      style={{ color: 'var(--color-text-muted)', fontWeight: 'var(--fw-medium)', letterSpacing: '0.08em' }}
-                    >
-                      Keterangan
-                    </label>
-                    <textarea
-                      id="modal-keterangan"
-                      rows={2}
-                      value={keterangan}
-                      onChange={e => setKeterangan(e.target.value)}
-                      placeholder="Contoh: Dana Punia dari Banjar Kaja"
-                      className="w-full rounded-xl border px-4 py-3 text-sm resize-none outline-none transition-colors"
-                      style={{
-                        background: 'var(--color-bg-input)',
-                        borderColor: 'var(--color-border-strong)',
-                        color: 'var(--color-text-primary)',
-                      }}
-                      required
-                    />
-                  </div>
-
-                  {/* Error */}
-                  {formError && (
-                    <p className="text-xs font-medium rounded-lg px-3 py-2" style={{ background: 'var(--color-expense-dim)', color: 'var(--color-expense)' }}>
-                      {formError}
-                    </p>
-                  )}
-
-                  {/* Buttons */}
-                  <div className="flex gap-3 pt-1">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      className="flex-1 rounded-xl"
-                      onClick={() => { setShowAddModal(false); setFormError(''); }}
-                    >
-                      Batal
-                    </Button>
-                    <Button
-                      type="submit"
-                      variant="primary"
-                      className="flex-1 rounded-xl"
-                      disabled={isSubmitting}
-                    >
-                      {isSubmitting ? 'Mengirim…' : 'Simpan ke Blockchain'}
-                    </Button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          )}
-        </>
-      )}
     </>
   );
 }

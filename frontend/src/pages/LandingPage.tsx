@@ -52,7 +52,9 @@ export default function LandingPage() {
         >
           <div className="flex items-center gap-3">
             <img src="/logo.png" alt="TransParas Logo" className="w-10 h-10 rounded-xl object-cover shadow-lg shadow-[var(--color-brand-orange)]/10" />
-            <span className="text-2xl font-bold tracking-tight text-white">Trans<span className="text-[var(--color-brand-orange)]">Paras</span></span>
+            <span className="text-xl text-[var(--color-text-primary)]" style={{ fontWeight: 800, letterSpacing: '0.14em' }}>
+              TRANSPARAS
+            </span>
           </div>
 
           <div className="hidden md:flex gap-8">
@@ -122,10 +124,10 @@ export default function LandingPage() {
             className="mt-10 flex flex-col items-center gap-4"
           >
             <Link 
-              to="/login"
+              to="/dashboard"
               className="group inline-flex items-center justify-center gap-2 rounded-full bg-[var(--color-brand-orange)] text-white font-medium text-sm px-8 py-3.5 transition-all hover:bg-[var(--color-brand-orange-hover)] active:scale-[0.98] shadow-lg shadow-[var(--color-brand-orange)]/20"
             >
-              Coba Dasbor TransParas
+              Lihat Dasbor Warga
               <ChevronRight size={16} className="group-hover:translate-x-[2px] transition-transform" />
             </Link>
             <span className="text-xs text-white/40">Didukung oleh Polygon Network</span>
@@ -142,7 +144,7 @@ export default function LandingPage() {
           <div className="max-w-7xl mx-auto px-6 h-full flex items-center justify-between text-xs text-white/70">
             <div className="flex items-center gap-4">
               <Hexagon size={14} className="text-[var(--color-brand-orange)]" />
-              <span className="font-bold text-white">TransParas</span>
+              <span className="text-[var(--color-text-primary)] uppercase" style={{ fontWeight: 'var(--fw-bold)', letterSpacing: '0.14em' }}>TransParas</span>
               <span className="hidden sm:inline hover:text-white cursor-pointer">File</span>
               <span className="hidden sm:inline hover:text-white cursor-pointer">Edit</span>
               <span className="hidden md:inline hover:text-white cursor-pointer">View</span>
@@ -171,7 +173,7 @@ export default function LandingPage() {
                 <div className="w-3 h-3 rounded-full bg-[#febc2e]"></div>
                 <div className="w-3 h-3 rounded-full bg-[#28c840]"></div>
               </div>
-              <div className="absolute left-1/2 -translate-x-1/2 text-xs text-white/50 font-medium">
+              <div className="absolute left-1/2 -translate-x-1/2 text-xs text-white/50 uppercase" style={{ fontWeight: 'var(--fw-medium)', letterSpacing: '0.05em' }}>
                 TransParas — Dasbor Pengelola
               </div>
             </div>
@@ -359,15 +361,18 @@ export default function LandingPage() {
               
               <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
                 <Link 
-                  to="/login"
+                  to="/dashboard"
                   className="group inline-flex items-center justify-center gap-2 rounded-full bg-white text-black font-semibold text-sm px-8 py-3.5 transition-all hover:bg-white/90 active:scale-[0.98]"
                 >
-                  Mulai Gunakan TransParas
+                  <Eye size={16} /> Masuk sebagai Warga
                   <ChevronRight size={16} className="group-hover:translate-x-[2px] transition-transform" />
                 </Link>
-                <button className="rounded-full border border-white/15 text-white text-sm font-medium px-8 py-3.5 hover:bg-white/5 transition-colors flex items-center gap-2 cursor-not-allowed opacity-50">
-                  <Eye size={16} /> Lihat Demo Publik
-                </button>
+                <Link 
+                  to="/login"
+                  className="rounded-full border border-white/15 text-white text-sm font-medium px-8 py-3.5 hover:bg-white/5 transition-colors flex items-center gap-2"
+                >
+                  Masuk sebagai Pengelola
+                </Link>
               </div>
             </div>
           </motion.div>

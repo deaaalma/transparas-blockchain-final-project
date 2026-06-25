@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useBlockchain, type Transaction } from '../hooks/useBlockchain';
+import { useWallet } from '../features/blockchain/WalletContext';
+import type { Transaction } from '../hooks/useBlockchain';
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '../components/ui/Table';
 import { Skeleton } from '../components/ui/Skeleton';
 import { EmptyState } from '../components/ui/EmptyState';
@@ -24,7 +25,8 @@ function StatusBadge({ status }: { status: string }) {
 
 export default function TransactionPage() {
   const navigate = useNavigate();
-  const { getTransactions, isConnected } = useBlockchain();
+  const { getTransactions } = useWallet();
+  const isAdmin = !!localStorage.getItem('token');
   const { toast } = useToast();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -79,13 +81,9 @@ export default function TransactionPage() {
 
   useEffect(() => {
     document.title = 'Transactions | TransParas';
-    if (isConnected) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      fetchTransactions();
-    } else {
-      setIsLoading(false);
-    }
-  }, [isConnected, fetchTransactions]);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchTransactions();
+  }, [fetchTransactions]);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -152,10 +150,12 @@ export default function TransactionPage() {
             </p>
           </div>
           <div className="flex gap-2">
-            <Button onClick={() => setIsExportModalOpen(true)} variant="outline" size="sm" className="gap-2 rounded-xl h-[34px] border-[var(--color-brand-orange)] text-[var(--color-brand-orange)] hover:bg-[var(--color-brand-orange-dim)]">
-              <Download size={14} />
-              Ekspor
-            </Button>
+            {isAdmin && (
+              <Button onClick={() => setIsExportModalOpen(true)} variant="outline" size="sm" className="gap-2 rounded-xl h-[34px] border-[var(--color-brand-orange)] text-[var(--color-brand-orange)] hover:bg-[var(--color-brand-orange-dim)]">
+                <Download size={14} />
+                Ekspor
+              </Button>
+            )}
             <Button onClick={handleRefresh} variant="outline" size="sm" className="gap-2 rounded-xl h-[34px]">
               <RefreshCcw size={14} />
               Refresh
@@ -164,7 +164,7 @@ export default function TransactionPage() {
         </div>
 
         {/* Search and Filter Bar */}
-        {isConnected && transactions.length > 0 && (
+        {transactions.length > 0 && (
           <div className="flex items-center gap-3 w-full relative">
             {/* Search Input */}
             <div className="relative flex-1">
@@ -292,13 +292,7 @@ export default function TransactionPage() {
       </div>
 
       {/* Main Content Area */}
-      {!isConnected ? (
-        <EmptyState
-          icon={<FileText size={24} />}
-          title="Dompet Belum Terhubung"
-          description="Silakan hubungkan dompet digital Anda (MetaMask) untuk melihat riwayat transaksi."
-        />
-      ) : isLoading ? (
+      {isLoading ? (
         // Loading Skeleton
         <div className="space-y-4">
           <Skeleton className="w-full h-12" />
@@ -350,7 +344,7 @@ export default function TransactionPage() {
             {filteredTransactions.map((tx) => (
               <TableRow 
                 key={tx.id}
-                onClick={() => navigate(`/transaksi/${tx.id}`)}
+                onClick={() => navigate(`/dashboard/transaksi/${tx.id}`)}
                 className="cursor-pointer hover:bg-[var(--color-bg-card-hover)] transition-colors group"
               >
                 <TableCell className="font-mono text-xs text-[var(--color-text-muted)] font-medium group-hover:text-[var(--color-brand-orange)] transition-colors">

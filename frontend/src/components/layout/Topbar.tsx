@@ -8,6 +8,7 @@ import { api } from '../../lib/axios';
 export function Topbar() {
   const { isConnected, connectWallet, reconnectWallet, disconnectWallet, isOwner } = useWallet();
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
+  const isAdmin = !!localStorage.getItem('token');
 
   useEffect(() => {
     // Initial fetch
@@ -42,15 +43,20 @@ export function Topbar() {
           className="w-6 h-6 rounded-lg object-cover shrink-0"
           aria-hidden="true"
         />
-        <span className="text-sm text-[var(--color-text-primary)] uppercase" style={{ fontWeight: 'var(--fw-bold)', letterSpacing: '0.14em' }}>
-          TransParas
+        <span className="text-[13px] text-[var(--color-text-primary)]" style={{ fontWeight: 800, letterSpacing: '0.14em' }}>
+          TRANSPARAS
         </span>
       </NavLink>
 
       {/* Right actions */}
       <div className="flex items-center gap-3">
-        {/* Connect / status */}
-        {isConnected ? (
+        {/* Status Admin vs Warga */}
+        {!localStorage.getItem('token') ? (
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-semibold" style={{ background: 'var(--color-bg-card-hover)', borderColor: 'var(--color-border-strong)', color: 'var(--color-text-secondary)' }}>
+            <UserCircle2 size={14} />
+            Warga / Publik
+          </div>
+        ) : isConnected ? (
           <div className="flex items-center gap-1">
             <button
               onClick={reconnectWallet}
@@ -71,7 +77,7 @@ export function Topbar() {
             </button>
             <button
               onClick={disconnectWallet}
-              title="Simulasikan Warga Biasa (Disconnect)"
+              title="Disconnect Wallet"
               className="flex items-center justify-center w-8 h-8 rounded-xl border transition-colors hover:bg-[var(--color-bg-card-hover)] cursor-pointer"
               style={{ borderColor: 'var(--color-border-strong)', color: 'var(--color-expense)' }}
             >
@@ -94,19 +100,21 @@ export function Topbar() {
           <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full" style={{ background: 'var(--color-brand-orange)' }} aria-hidden="true" />
         </button>
 
-        <NavLink
-          to="/profil"
-          className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-colors hover:ring-2 hover:ring-[var(--color-brand-orange)] overflow-hidden shrink-0"
-          style={{ background: 'var(--color-bg-card-hover)', color: 'var(--color-text-secondary)' }}
-          title="Profil Organisasi"
-          aria-label="Profil Organisasi"
-        >
-          {logoUrl ? (
-            <img src={logoUrl} alt="Profil" className="w-full h-full object-cover" />
-          ) : (
-            'B'
-          )}
-        </NavLink>
+        {isAdmin && (
+          <NavLink
+            to="/profil"
+            className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-colors hover:ring-2 hover:ring-[var(--color-brand-orange)] overflow-hidden shrink-0"
+            style={{ background: 'var(--color-bg-card-hover)', color: 'var(--color-text-secondary)' }}
+            title="Profil Organisasi"
+            aria-label="Profil Organisasi"
+          >
+            {logoUrl ? (
+              <img src={logoUrl} alt="Profil" className="w-full h-full object-cover" />
+            ) : (
+              'B'
+            )}
+          </NavLink>
+        )}
       </div>
     </header>
   );

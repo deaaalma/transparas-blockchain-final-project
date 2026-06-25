@@ -39,6 +39,7 @@ export default function ProfilePage() {
   const { toast } = useToast();
   const navigate = useNavigate();
   const { dispatch } = useAuth();
+  const isAdmin = !!localStorage.getItem('token');
   
   const [profile, setProfile] = useState<BanjarProfile>(DEFAULT_PROFILE);
   const [isEditing, setIsEditing] = useState(false);
@@ -226,19 +227,21 @@ export default function ProfilePage() {
             </div>
           </div>
           
-          <Button 
-            variant={isEditing ? "outline" : "outline"}
-            onClick={handleEditToggle}
-            className="rounded-full px-5 gap-2 shrink-0 h-9 font-semibold text-xs transition-colors hover:bg-[var(--color-bg-card)]"
-            style={{ borderColor: 'var(--color-border-strong)' }}
-            disabled={isSaving}
-          >
-            {isEditing ? (
-              <><X size={14} /> Batal</>
-            ) : (
-              <><Edit3 size={14} /> Edit</>
-            )}
-          </Button>
+          {isAdmin && (
+            <Button 
+              variant={isEditing ? "outline" : "outline"}
+              onClick={handleEditToggle}
+              className="rounded-full px-5 gap-2 shrink-0 h-9 font-semibold text-xs transition-colors hover:bg-[var(--color-bg-card)]"
+              style={{ borderColor: 'var(--color-border-strong)' }}
+              disabled={isSaving}
+            >
+              {isEditing ? (
+                <><X size={14} /> Batal</>
+              ) : (
+                <><Edit3 size={14} /> Edit</>
+              )}
+            </Button>
+          )}
         </div>
 
         {/* Section: Organisasi Details */}
@@ -358,7 +361,7 @@ export default function ProfilePage() {
         </div>
 
         {/* Section: Zona Berbahaya / Logout */}
-        {!isEditing && (
+        {!isEditing && isAdmin && (
           <div className="mt-12 flex justify-center border-t border-[var(--color-border)] pt-8">
             <Button 
               variant="outline" 
