@@ -58,16 +58,25 @@ export default function LandingPage() {
           </div>
 
           <div className="hidden md:flex gap-8">
-            {['Beranda', 'Tentang Kami', 'Dokumentasi', 'Kontak'].map((link, i) => (
+            {[
+              { name: 'Beranda', id: 'beranda' },
+              { name: 'Fitur', id: 'fitur' },
+              { name: 'Testimoni', id: 'testimoni' },
+              { name: 'Mulai', id: 'gabung' }
+            ].map((link, i) => (
               <motion.a 
-                key={link}
-                href="#"
+                key={link.name}
+                href={`#${link.id}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById(link.id)?.scrollIntoView({ behavior: 'smooth' });
+                }}
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 + i * 0.05 }}
                 className="text-white/70 text-sm font-medium hover:text-white transition-colors"
               >
-                {link}
+                {link.name}
               </motion.a>
             ))}
           </div>
@@ -84,7 +93,7 @@ export default function LandingPage() {
         </motion.nav>
 
         {/* Section 2 - Hero */}
-        <section className="min-h-[calc(100vh-120px)] flex flex-col items-center justify-center text-center px-4 pb-10">
+        <section id="beranda" className="min-h-[calc(100vh-120px)] flex flex-col items-center justify-center text-center px-4 pb-10 pt-20">
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -159,6 +168,7 @@ export default function LandingPage() {
 
         {/* Section 4 - Dashboard Mockup */}
         <motion.section 
+          id="fitur"
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
@@ -292,7 +302,7 @@ export default function LandingPage() {
         </section>
 
         {/* Section 6 - Testimonials */}
-        <section className="max-w-7xl mx-auto px-6 py-20 md:py-28 border-t border-white/10">
+        <section id="testimoni" className="max-w-7xl mx-auto px-6 py-20 md:py-28 border-t border-white/10">
           <div className="text-center mb-16">
             <SectionEyebrow label="Kepercayaan Publik" />
             <h2 className="mt-4 text-3xl font-semibold">Mengembalikan Kepercayaan Warga</h2>
@@ -340,7 +350,7 @@ export default function LandingPage() {
         </section>
 
         {/* Section 7 - Final CTA */}
-        <section className="max-w-7xl mx-auto px-6 py-20 md:py-32">
+        <section id="gabung" className="max-w-7xl mx-auto px-6 py-20 md:py-32">
           <motion.div 
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
