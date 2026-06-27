@@ -1,8 +1,7 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Hexagon, ArrowRight, ShieldCheck, Lock, Activity, Eye, CheckCircle2, ChevronRight, PieChart, ClipboardList, Search } from 'lucide-react';
-
-
+import logoImg from '../assets/logo.png';
 
 const SectionEyebrow = ({ label, tag }: { label: string; tag?: string }) => (
   <div className="flex items-center gap-3">
@@ -52,7 +51,7 @@ export default function LandingPage() {
           className="max-w-7xl mx-auto px-6 py-6 flex items-center justify-between"
         >
           <div className="flex items-center gap-3">
-            <img src="/logo.png" alt="TransParas Logo" className="w-10 h-10 rounded-xl object-cover shadow-lg shadow-[var(--color-brand-orange)]/10" />
+            <img src={logoImg} alt="TransParas Logo" className="w-10 h-10 rounded-xl object-cover shadow-lg shadow-[var(--color-brand-orange)]/10" />
             <span className="text-xl text-[var(--color-text-primary)]" style={{ fontWeight: 800, letterSpacing: '0.14em' }}>
               TRANSPARAS
             </span>

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useWallet } from '../../features/blockchain/WalletContext';
 import { Button } from '../ui/Button';
 import { api } from '../../lib/axios';
+import logoImg from '../../assets/logo.png';
 
 export function Topbar() {
   const { isConnected, connectWallet, reconnectWallet, disconnectWallet, isOwner } = useWallet();
@@ -38,7 +39,7 @@ export function Topbar() {
       {/* Logo text */}
       <NavLink to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity" title="Ke Dashboard Utama">
         <img
-          src="/logo.png"
+          src={logoImg}
           alt=""
           className="w-6 h-6 rounded-lg object-cover shrink-0"
           aria-hidden="true"

@@ -60,7 +60,7 @@ export function Sidebar() {
         title="Kembali ke Beranda"
       >
         <img
-          src="/logo.png"
+          src={logoImg}
           alt="TransParas Logo"
           className="w-9 h-9 rounded-xl shrink-0 object-cover"
         />

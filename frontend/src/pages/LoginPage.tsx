@@ -2,6 +2,7 @@ import { LoginForm } from '../features/auth/components/LoginForm'
 import { Shield } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
+import logoImg from '../assets/logo.png'
 
 export default function LoginPage() {
   return (
@@ -36,7 +37,7 @@ export default function LoginPage() {
         <div className="hidden md:flex flex-col justify-between p-12 relative bg-black/40 border-r border-white/5">
           <div className="relative z-10">
             <Link to="/" className="flex items-center gap-3 mb-12 hover:opacity-80 transition-opacity">
-              <img src="/logo.png" alt="TransParas Logo" className="w-10 h-10 rounded-xl object-cover shadow-lg shadow-[var(--color-brand-orange)]/10" />
+              <img src={logoImg} alt="TransParas Logo" className="w-10 h-10 rounded-xl object-cover shadow-lg shadow-[var(--color-brand-orange)]/10" />
               <span className="text-xl text-[var(--color-text-primary)]" style={{ fontWeight: 800, letterSpacing: '0.14em' }}>
                 TRANSPARAS
               </span>
@@ -57,7 +58,7 @@ export default function LoginPage() {
         <div className="p-8 md:p-12 flex flex-col justify-center bg-[#0e1014]/60 backdrop-blur-md">
           <div className="mb-8 md:hidden flex items-center gap-3">
             <Link to="/">
-              <img src="/logo.png" alt="TransParas Logo" className="w-8 h-8 rounded-lg object-cover inline-block" />
+              <img src={logoImg} alt="TransParas Logo" className="w-8 h-8 rounded-lg object-cover inline-block" />
               <span className="text-lg text-[var(--color-text-primary)] uppercase ml-2" style={{ fontWeight: 'var(--fw-bold)', letterSpacing: '0.14em' }}>
                 TransParas
               </span>

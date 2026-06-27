@@ -1,20 +1,11 @@
 import { Link } from 'react-router-dom'
 import Lottie from 'lottie-react'
-import { useState, useEffect } from 'react'
+import animationData from '../assets/404-animation.json'
 
 export default function NotFoundPage() {
   const isAdmin = !!localStorage.getItem('token')
   const targetUrl = isAdmin ? '/dashboard' : '/'
   const targetLabel = isAdmin ? 'Kembali ke Dashboard' : 'Kembali ke Beranda'
-
-  const [animationData, setAnimationData] = useState<any>(null);
-
-  useEffect(() => {
-    fetch('/404-animation.json')
-      .then((res) => res.json())
-      .then((data) => setAnimationData(data))
-      .catch((err) => console.error('Failed to load Lottie animation:', err));
-  }, []);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen w-full p-6" style={{ background: 'var(--color-bg-base)' }}>

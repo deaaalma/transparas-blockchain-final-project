@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../features/auth';
 import { authApi } from '../features/auth/api/authApi';
 import { api } from '../lib/axios';
+import logoImg from '../assets/logo.png';
 
 interface BanjarProfile {
   name: string;
@@ -31,7 +32,7 @@ const DEFAULT_PROFILE: BanjarProfile = {
   leaderName: "I Wayan Budiarta",
   treasurerName: "Ni Made Susanti",
   secretaryName: "I Nyoman Wirawan",
-  logoUrl: "/logo.png"
+  logoUrl: logoImg
 };
 
 export default function ProfilePage() {
@@ -189,7 +190,7 @@ export default function ProfilePage() {
           <div className="flex items-center gap-5">
             <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full border-[3px] border-[var(--color-bg-surface)] overflow-hidden shadow-lg relative shrink-0 bg-[var(--color-bg-card)]">
               <img 
-                src={previewUrl || profile.logoUrl || '/logo.png'} 
+                src={previewUrl || profile.logoUrl || logoImg} 
                 alt="Logo Banjar" 
                 className="w-full h-full object-cover" 
               />
