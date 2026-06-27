@@ -51,15 +51,6 @@ export default function LoginPage() {
             </p>
           </div>
 
-          <div className="relative z-10 flex items-center gap-4 mt-12 p-4 rounded-2xl liquid-glass border border-white/10">
-            <div className="p-3 rounded-full bg-[var(--color-brand-orange)]/20 text-[var(--color-brand-orange)]">
-              <Shield size={20} />
-            </div>
-            <div>
-              <p className="text-sm font-bold text-white">Keamanan Terjamin</p>
-              <p className="text-xs text-white/50">Didukung oleh Polygon Network</p>
-            </div>
-          </div>
         </div>
 
         {/* Right Side: Form */}
@@ -75,7 +66,7 @@ export default function LoginPage() {
 
           <div className="mb-8">
             <h2 className="text-2xl font-bold text-white mb-2">Selamat Datang Kembali</h2>
-            <p className="text-sm text-white/60">Masuk ke akun Anda untuk mengelola dasbor keuangan desa.</p>
+            <p className="text-sm text-white/60">Masukkan email akun desa/bendahara</p>
           </div>
 
           <LoginForm />
