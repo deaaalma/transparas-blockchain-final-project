@@ -102,7 +102,7 @@ export function Topbar() {
 
         {isAdmin && (
           <NavLink
-            to="/profil"
+            to="/dashboard/profil"
             className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-colors hover:ring-2 hover:ring-[var(--color-brand-orange)] overflow-hidden shrink-0"
             style={{ background: 'var(--color-bg-card-hover)', color: 'var(--color-text-secondary)' }}
             title="Profil Organisasi"
