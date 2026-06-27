@@ -1,6 +1,6 @@
 import { Bell, UserCircle2, LogOut } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useWallet } from '../../features/blockchain/WalletContext';
 import { Button } from '../ui/Button';
 import { api } from '../../lib/axios';
@@ -9,7 +9,25 @@ import logoImg from '../../assets/logo.png';
 export function Topbar() {
   const { isConnected, connectWallet, reconnectWallet, disconnectWallet, isOwner } = useWallet();
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
+  const [isNotifOpen, setIsNotifOpen] = useState(false);
+  const notifRef = useRef<HTMLDivElement>(null);
   const isAdmin = !!localStorage.getItem('token');
+
+  useEffect(() => {
+    // Handle click outside to close notif
+    const handleClickOutside = (event: MouseEvent) => {
+      if (notifRef.current && !notifRef.current.contains(event.target as Node)) {
+        setIsNotifOpen(false);
+      }
+    };
+    
+    if (isNotifOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isNotifOpen]);
 
   useEffect(() => {
     // Initial fetch
@@ -92,14 +110,64 @@ export function Topbar() {
           </Button>
         )}
 
-        <button
-          aria-label="Notifikasi"
-          className="relative w-9 h-9 rounded-xl flex items-center justify-center transition-colors cursor-pointer"
-          style={{ color: 'var(--color-text-muted)' }}
-        >
-          <Bell size={17} />
-          <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full" style={{ background: 'var(--color-brand-orange)' }} aria-hidden="true" />
-        </button>
+        <div className="relative" ref={notifRef}>
+          <button
+            onClick={() => setIsNotifOpen(!isNotifOpen)}
+            aria-label="Notifikasi"
+            className={`relative w-9 h-9 rounded-xl flex items-center justify-center transition-colors cursor-pointer ${isNotifOpen ? 'bg-[var(--color-bg-card-hover)] text-[var(--color-text-primary)]' : 'text-[var(--color-text-muted)] hover:bg-[var(--color-bg-card-hover)] hover:text-[var(--color-text-secondary)]'}`}
+          >
+            <Bell size={17} />
+            <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full" style={{ background: 'var(--color-brand-orange)' }} aria-hidden="true" />
+          </button>
+
+          {/* Dropdown Notifikasi */}
+          {isNotifOpen && (
+            <div className="absolute right-0 top-full mt-2 w-80 bg-[var(--color-bg-surface)] border border-[var(--color-border-strong)] rounded-2xl shadow-2xl z-50 animate-in fade-in slide-in-from-top-2 overflow-hidden">
+              <div className="px-5 py-4 border-b border-[var(--color-border-strong)] flex items-center justify-between bg-[var(--color-bg-card)]">
+                <h3 className="text-sm font-bold text-[var(--color-text-primary)]">Notifikasi</h3>
+                <span className="text-[10px] font-bold text-[var(--color-brand-orange)] bg-[var(--color-brand-orange-dim)] px-2 py-0.5 rounded-full">2 Baru</span>
+              </div>
+              <div className="max-h-[300px] overflow-y-auto custom-scrollbar">
+                
+                {/* Item 1 */}
+                <div className="px-5 py-4 border-b border-[var(--color-border)] hover:bg-[var(--color-bg-input)] transition-colors cursor-pointer relative">
+                  <div className="absolute left-2 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-[var(--color-brand-orange)]" />
+                  <div className="pl-2">
+                    <p className="text-sm font-semibold text-[var(--color-text-primary)] mb-1">Peringatan Saldo Rendah</p>
+                    <p className="text-xs text-[var(--color-text-muted)] leading-relaxed">Kas operasional banjar bulan ini hampir mencapai batas minimum. Harap evaluasi pengeluaran.</p>
+                    <p className="text-[10px] text-[var(--color-text-muted)] mt-2 font-medium">10 Menit yang lalu</p>
+                  </div>
+                </div>
+
+                {/* Item 2 */}
+                <div className="px-5 py-4 border-b border-[var(--color-border)] hover:bg-[var(--color-bg-input)] transition-colors cursor-pointer relative">
+                  <div className="absolute left-2 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-[var(--color-brand-orange)]" />
+                  <div className="pl-2">
+                    <p className="text-sm font-semibold text-[var(--color-text-primary)] mb-1">Transaksi Baru Berhasil</p>
+                    <p className="text-xs text-[var(--color-text-muted)] leading-relaxed">Dana Punia sebesar Rp 1.500.000 berhasil disahkan dan dicatat ke dalam Polygon Blockchain.</p>
+                    <p className="text-[10px] text-[var(--color-text-muted)] mt-2 font-medium">2 Jam yang lalu</p>
+                  </div>
+                </div>
+
+                {/* Item 3 */}
+                <div className="px-5 py-4 hover:bg-[var(--color-bg-input)] transition-colors cursor-pointer pl-7 opacity-70">
+                  <p className="text-sm font-semibold text-[var(--color-text-primary)] mb-1">Sistem Siap</p>
+                  <p className="text-xs text-[var(--color-text-muted)] leading-relaxed">Pembaruan keamanan sistem blockchain berhasil diterapkan. Tidak ada aksi yang diperlukan.</p>
+                  <p className="text-[10px] text-[var(--color-text-muted)] mt-2 font-medium">Kemarin, 14:30</p>
+                </div>
+
+              </div>
+              <div className="p-3 border-t border-[var(--color-border-strong)] bg-[var(--color-bg-card)]">
+                <button 
+                  onClick={() => setIsNotifOpen(false)}
+                  className="w-full py-2 text-xs font-semibold text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors"
+                >
+                  Tandai Semua Dibaca
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
 
         {isAdmin && (
           <NavLink
