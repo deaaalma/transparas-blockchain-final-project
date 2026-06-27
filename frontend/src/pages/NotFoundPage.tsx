@@ -31,8 +31,8 @@ export default function NotFoundPage() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen w-full p-6" style={{ background: 'var(--color-bg-base)' }}>
-      <div className="w-full max-w-2xl flex flex-col items-center justify-center text-center">
-        <div className="w-full max-w-lg mb-8" ref={containerRef}>
+      <div className="w-full max-w-3xl flex flex-col items-center justify-center text-center">
+        <div className="w-full max-w-2xl mb-8" ref={containerRef}>
         </div>
         
         <h1 
@@ -44,11 +44,8 @@ export default function NotFoundPage() {
         
         <Link 
           to={targetUrl}
-          className="h-12 px-10 flex items-center justify-center rounded-full text-sm font-bold transition-all text-white hover:brightness-110 active:scale-95 shadow-lg"
-          style={{ 
-            background: 'var(--color-brand-orange)', 
-            boxShadow: '0 10px 25px -5px var(--color-brand-orange)' 
-          }}
+          className="h-12 px-10 flex items-center justify-center rounded-full text-sm font-bold transition-all text-white hover:brightness-110 active:scale-95"
+          style={{ background: 'var(--color-brand-orange)' }}
         >
           {targetLabel}
         </Link>
