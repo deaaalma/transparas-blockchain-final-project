@@ -1,12 +1,14 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useForm } from '../../../hooks/useForm'
 import { authApi } from '../api/authApi'
 import { useAuth } from '../store/authContext'
-import { Mail, Lock, Loader2 } from 'lucide-react'
+import { Mail, Lock, Loader2, Eye, EyeOff } from 'lucide-react'
 
 export function LoginForm() {
   const navigate = useNavigate()
   const { dispatch } = useAuth()
+  const [showPassword, setShowPassword] = useState(false)
   
   const { values, errors, isSubmitting, handleChange, handleSubmit } = useForm(
     { email: '', password: '' },
@@ -59,12 +61,20 @@ export function LoginForm() {
           </div>
           <input
             name="password"
-            type="password"
+            type={showPassword ? "text" : "password"}
             value={String(values.password)}
             onChange={handleChange}
-            className={`w-full h-12 pl-11 pr-4 rounded-xl border bg-[var(--color-bg-surface)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-brand-orange)] transition-colors placeholder-[var(--color-text-muted)] ${errors.password ? 'border-[var(--color-expense)]' : 'border-[var(--color-border-strong)]'}`}
+            className={`w-full h-12 pl-11 pr-12 rounded-xl border bg-[var(--color-bg-surface)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-brand-orange)] transition-colors placeholder-[var(--color-text-muted)] ${errors.password ? 'border-[var(--color-expense)]' : 'border-[var(--color-border-strong)]'}`}
             placeholder="••••••••"
           />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] transition-colors focus:outline-none"
+            aria-label={showPassword ? "Sembunyikan kata sandi" : "Tampilkan kata sandi"}
+          >
+            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+          </button>
         </div>
         {errors.password && <p className="text-[var(--color-expense)] text-xs ml-1 animate-in slide-in-from-top-1">{errors.password}</p>}
       </div>
