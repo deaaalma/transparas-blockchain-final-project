@@ -7,8 +7,8 @@ export default function NotFoundPage() {
   const targetLabel = isAdmin ? 'Kembali ke Dashboard' : 'Kembali ke Beranda'
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-6" style={{ background: 'var(--color-bg-base)' }}>
-      <div className="flex flex-col items-center max-w-md text-center p-10 rounded-3xl border border-[var(--color-border)] shadow-xl" style={{ background: 'var(--color-bg-surface)' }}>
+    <div className="flex flex-col items-center justify-center min-h-screen w-full p-6" style={{ background: 'var(--color-bg-base)' }}>
+      <div className="flex flex-col items-center justify-center w-full max-w-md mx-auto text-center p-10 rounded-3xl border border-[var(--color-border)] shadow-xl" style={{ background: 'var(--color-bg-surface)' }}>
         <div className="w-20 h-20 rounded-full flex items-center justify-center mb-6" style={{ background: 'var(--color-brand-orange-dim)', color: 'var(--color-brand-orange)' }}>
           <FileQuestion size={40} />
         </div>
