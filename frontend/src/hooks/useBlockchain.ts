@@ -215,14 +215,24 @@ export function useBlockchain() {
     try {
       const feeData = await provider.getFeeData();
       
-      // Beri buffer 20% untuk gas fee agar tidak gagal di jaringan Polygon Amoy
-      // Amoy memiliki minimum gas price yang ketat dan sering berubah tiba-tiba
+      // Polygon Amoy memiliki minimum gas price 30 Gwei (30,000,000,000 wei)
+      // Jika estimasi jaringan sedang error, kita set batas bawah 35 Gwei agar aman
       const overrides: any = {};
+      const MIN_GAS = 35000000000n; // 35 Gwei
+      
       if (feeData.maxFeePerGas && feeData.maxPriorityFeePerGas) {
-        overrides.maxFeePerGas = (feeData.maxFeePerGas * 12n) / 10n;
-        overrides.maxPriorityFeePerGas = (feeData.maxPriorityFeePerGas * 12n) / 10n;
+        let maxFee = (feeData.maxFeePerGas * 12n) / 10n;
+        let maxPri = (feeData.maxPriorityFeePerGas * 12n) / 10n;
+        
+        if (maxFee < MIN_GAS) maxFee = MIN_GAS;
+        if (maxPri < MIN_GAS) maxPri = MIN_GAS;
+        
+        overrides.maxFeePerGas = maxFee;
+        overrides.maxPriorityFeePerGas = maxPri;
       } else if (feeData.gasPrice) {
-        overrides.gasPrice = (feeData.gasPrice * 12n) / 10n;
+        let gp = (feeData.gasPrice * 12n) / 10n;
+        if (gp < MIN_GAS) gp = MIN_GAS;
+        overrides.gasPrice = gp;
       }
 
       const tx = await contract.addTransaction(keterangan, nominal, isIncome, overrides);
