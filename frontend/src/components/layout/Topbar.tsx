@@ -110,7 +110,7 @@ export function Topbar() {
             aria-label="Profil Organisasi"
           >
             {logoUrl ? (
-              <img src={logoUrl} alt="Profil" className="w-full h-full object-cover" />
+              <img src={logoUrl === '/logo.png' ? logoImg : logoUrl} alt="Profil" className="w-full h-full object-cover" />
             ) : (
               'B'
             )}
