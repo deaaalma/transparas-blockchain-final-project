@@ -190,7 +190,7 @@ export default function ProfilePage() {
           <div className="flex items-center gap-5">
             <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full border-[3px] border-[var(--color-bg-surface)] overflow-hidden shadow-lg relative shrink-0 bg-[var(--color-bg-card)]">
               <img 
-                src={previewUrl || profile.logoUrl || logoImg} 
+                src={previewUrl || (profile.logoUrl && profile.logoUrl !== '/logo.png' ? profile.logoUrl : logoImg)} 
                 alt="Logo Banjar" 
                 className="w-full h-full object-cover" 
               />
