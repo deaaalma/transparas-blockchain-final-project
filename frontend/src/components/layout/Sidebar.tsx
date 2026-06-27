@@ -2,6 +2,7 @@ import {
   LayoutDashboard, ClipboardList, Shield, Settings, LogOut, PieChart
 } from 'lucide-react';
 import { NavLink, useNavigate } from 'react-router-dom';
+import logoImg from '../../assets/logo.png';
 
 function NavItem({
   icon, label, to, badge, end,
