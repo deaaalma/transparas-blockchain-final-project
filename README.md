@@ -4,7 +4,7 @@
 
 **TransParas** adalah sebuah purwarupa sistem pelaporan kas/keuangan untuk Desa Adat atau Banjar di Bali yang diintegrasikan dengan teknologi **Blockchain (Polygon Amoy Testnet)** dan **IPFS (InterPlanetary File System)**. Sistem ini menjamin transparansi, kekekalan data (immutable), dan desentralisasi informasi, sehingga mencegah terjadinya manipulasi dana organisasi.
 
-Proyek ini dibuat sebagai bagian dari **Tugas Akhir (Skripsi)**.
+Proyek ini dibuat sebagai pemenuhan **Tugas Mata Kuliah Blockchain**.
 
 ---
 
@@ -96,4 +96,4 @@ npm install
 
 ---
 
-*Dibuat untuk keperluan Tugas Akhir.*
+*Dibuat untuk pemenuhan Tugas Mata Kuliah Blockchain.*
