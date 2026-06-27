@@ -1,6 +1,7 @@
 # 🏝️ TransParas - Platform Transparansi Keuangan Desa Adat Bali Berbasis Blockchain
 
-![TransParas Cover](https://github.com/deaaalma/transparas-blockchain-final-project/assets/cover-placeholder.png) <!-- Ganti URL ini dengan URL screenshot aplikasimu yang paling bagus -->
+![TransParas Cover](https://github.com/deaaalma/transparas-blockchain-final-project/assets/cover-placeholder.png) <!-- Ganti URL ini dengan URL screenshot aplikasimu yang paling bagus --><img width="1500" height="1000" alt="Transparas Portfolio" src="https://github.com/user-attachments/assets/e626618e-ab59-4b29-95e3-ab6e3cf63d51" />
+
 
 **TransParas** adalah sebuah purwarupa sistem pelaporan kas/keuangan untuk Desa Adat atau Banjar di Bali yang diintegrasikan dengan teknologi **Blockchain (Polygon Amoy Testnet)** dan **IPFS (InterPlanetary File System)**. Sistem ini menjamin transparansi, kekekalan data (immutable), dan desentralisasi informasi, sehingga mencegah terjadinya manipulasi dana organisasi.
 
