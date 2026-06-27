@@ -42,7 +42,7 @@ export function LoginForm() {
             value={String(values.email)}
             onChange={handleChange}
             className={`w-full h-12 pl-11 pr-4 rounded-xl border bg-[var(--color-bg-surface)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-brand-orange)] transition-colors placeholder-[var(--color-text-muted)] ${errors.email ? 'border-[var(--color-expense)]' : 'border-[var(--color-border-strong)]'}`}
-            placeholder="admin@desa.id"
+            placeholder="Masukkan email desa/bendahara"
           />
         </div>
         {errors.email && <p className="text-[var(--color-expense)] text-xs ml-1 animate-in slide-in-from-top-1">{errors.email}</p>}
