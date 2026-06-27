@@ -7,7 +7,6 @@ import { Hexagon, ArrowRight, ShieldCheck, Lock, Activity, Eye, CheckCircle2, Ch
 const SectionEyebrow = ({ label, tag }: { label: string; tag?: string }) => (
   <div className="flex items-center gap-3">
     <span className="flex items-center gap-2 text-sm font-medium text-white/70">
-      <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-brand-orange)]" />
       {label}
     </span>
     {tag && (
@@ -186,7 +185,7 @@ export default function LandingPage() {
                 <div className="w-3 h-3 rounded-full bg-[#28c840]"></div>
               </div>
               <div className="absolute left-1/2 -translate-x-1/2 text-xs text-white/50 uppercase" style={{ fontWeight: 'var(--fw-medium)', letterSpacing: '0.05em' }}>
-                TransParas — Dasbor Pengelola
+                TransParas Dasbor Pengelola
               </div>
             </div>
 
@@ -259,7 +258,7 @@ export default function LandingPage() {
               viewport={{ once: true }}
               transition={{ duration: 0.7 }}
             >
-              <SectionEyebrow label="Transparansi" tag="Blockchain-native" />
+              <SectionEyebrow label="Transparansi" />
               <h2 className="mt-5 text-3xl md:text-5xl font-semibold tracking-tight leading-[1.1]">
                 Pantau Setiap Rupiah <br /> <span className="text-white/50">Tanpa Rahasia.</span>
               </h2>
