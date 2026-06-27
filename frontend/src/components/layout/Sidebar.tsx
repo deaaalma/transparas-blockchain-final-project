@@ -55,10 +55,9 @@ export function Sidebar() {
     >
       {/* Logo */}
       <NavLink 
-        to="/dashboard"
-        end
+        to="/"
         className="flex items-center justify-start mb-6 w-full h-10 px-1 overflow-hidden shrink-0 cursor-pointer rounded-xl transition-colors hover:bg-[var(--color-bg-card-hover)]"
-        title="Dashboard Utama"
+        title="Kembali ke Beranda"
       >
         <img
           src="/logo.png"
