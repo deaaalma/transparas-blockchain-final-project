@@ -1,10 +1,15 @@
 import { LoginForm } from '../features/auth/components/LoginForm'
 import { Shield } from 'lucide-react'
 import { motion } from 'framer-motion'
-import { Link } from 'react-router-dom'
+import { Link, Navigate } from 'react-router-dom'
 import logoImg from '../assets/logo.png'
 
 export default function LoginPage() {
+  // Jika sudah login, cegah masuk ke halaman login dan lempar kembali ke dashboard
+  if (localStorage.getItem('token')) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
   return (
     <div className="relative w-full h-full min-h-screen flex items-center justify-center p-4 overflow-hidden bg-[#0c0c0c] text-white">
       {/* Global Background Video */}
