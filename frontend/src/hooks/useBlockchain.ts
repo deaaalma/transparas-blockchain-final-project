@@ -209,11 +209,23 @@ export function useBlockchain() {
   };
 
   const addTransaction = async (keterangan: string, nominal: number, isIncome: boolean) => {
-    if (!contract || !signer) throw new Error("Wallet belum terhubung");
+    if (!contract || !signer || !provider) throw new Error("Wallet belum terhubung");
     if (!isOwner) throw new Error("Akses ditolak: Hanya bendahara yang dapat menambah transaksi");
 
     try {
-      const tx = await contract.addTransaction(keterangan, nominal, isIncome);
+      const feeData = await provider.getFeeData();
+      
+      // Beri buffer 20% untuk gas fee agar tidak gagal di jaringan Polygon Amoy
+      // Amoy memiliki minimum gas price yang ketat dan sering berubah tiba-tiba
+      const overrides: any = {};
+      if (feeData.maxFeePerGas && feeData.maxPriorityFeePerGas) {
+        overrides.maxFeePerGas = (feeData.maxFeePerGas * 12n) / 10n;
+        overrides.maxPriorityFeePerGas = (feeData.maxPriorityFeePerGas * 12n) / 10n;
+      } else if (feeData.gasPrice) {
+        overrides.gasPrice = (feeData.gasPrice * 12n) / 10n;
+      }
+
+      const tx = await contract.addTransaction(keterangan, nominal, isIncome, overrides);
       await tx.wait(); // Tunggu sampai transaksi masuk ke block
       return tx;
     } catch (err) {
